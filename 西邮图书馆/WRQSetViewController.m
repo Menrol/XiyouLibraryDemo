@@ -92,6 +92,7 @@
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
         UILabel *ExitloadLabel=[[UILabel alloc]initWithFrame:CGRectMake((W-W*0.2)/2, H*0.01, W*0.2, H*0.03)];
         ExitloadLabel.text=@"退出登录";
+        ExitloadLabel.textColor=[UIColor redColor];
         [cell.contentView addSubview:ExitloadLabel];
     }
     return cell;

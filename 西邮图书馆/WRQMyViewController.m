@@ -9,9 +9,6 @@
 #import "WRQMyViewController.h"
 #import "WRQMyTableViewCell.h"
 #import "WRQLoginViewController.h"
-#import "AFNetworking.h"
-#import "YYModel.h"
-#import "WRQMyModel.h"
 #define W [UIScreen mainScreen].bounds.size.width
 #define H [UIScreen mainScreen].bounds.size.height
 
@@ -21,6 +18,7 @@
 @property(strong,nonatomic)UITapGestureRecognizer *imagetap;
 @property(strong,nonatomic)UITapGestureRecognizer *labeltap;
 @property(strong,nonatomic)WRQMyModel *myModel;
+@property(strong,nonatomic)UIImage *headImage;
 @end
 
 @implementation WRQMyViewController
@@ -29,6 +27,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor=[UIColor whiteColor];
+    self.headImage=[UIImage imageNamed:@"nomalhead.png"];
     
     self.TableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, W, H) style:UITableViewStyleGrouped];
     self.TableView.delegate=self;
@@ -81,6 +80,7 @@
             [cell.loginButton addTarget:self action:@selector(pressloginButton) forControlEvents:UIControlEventTouchUpInside];
             cell.loginLabel.userInteractionEnabled=YES;
             cell.headImage.userInteractionEnabled=YES;
+            cell.headImage.image=[UIImage imageNamed:@"nomalhead.png"];
             [cell.headImage addGestureRecognizer:self.imagetap];
             [cell.loginLabel addGestureRecognizer:self.labeltap];
         }
@@ -90,6 +90,9 @@
             cell.nameLabel.hidden=NO;
             cell.loginLabel.hidden=YES;
             cell.loginButton.hidden=YES;
+            [cell.headImage addGestureRecognizer:self.imagetap];
+            cell.headImage.userInteractionEnabled=YES;
+            cell.headImage.image=self.headImage;
             cell.nameLabel.text=self.myModel.Name;
             cell.classLabel.text=self.myModel.Department;
             cell.numberLabel.text=self.myModel.ID;
@@ -102,19 +105,6 @@
         cell.textLabel.text=self.ChooseArray[indexPath.row];
         return cell;
     }
-}
-
-- (void)getdata{
-    AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
-    [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/user/info?session=%@",self.session] parameters:nil progress:nil
-      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-          NSLog(@"%@",responseObject);
-          NSDictionary *Detaildic=[responseObject objectForKey:@"Detail"];
-          self.myModel=[WRQMyModel yy_modelWithDictionary:Detaildic];
-          [self.TableView reloadData];
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-    }];
 }
 
 - (void)pushLoginView{
@@ -135,6 +125,62 @@
     if (self.isLogin==NO) {
         [self pushLoginView];
     }
+    else{
+        UIAlertController *alertController=[UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertAction *selectAction=[UIAlertAction actionWithTitle:@"从相册中选择照片" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+                // 1.调用系统相册,不可多选照片
+                UIImagePickerController *imagepickerController=[[UIImagePickerController alloc]init];
+                imagepickerController.sourceType=UIImagePickerControllerSourceTypePhotoLibrary;
+                imagepickerController.allowsEditing=YES;
+                imagepickerController.delegate=self;
+                [self presentViewController:imagepickerController animated:YES completion:nil];
+//                //  2.获取所有照片
+//                WRQPhotosViewController *photosViewController=[[WRQPhotosViewController alloc]init];
+//                self.hidesBottomBarWhenPushed=YES;
+//                [self.navigationController pushViewController:photosViewController animated:YES];
+//                self.hidesBottomBarWhenPushed=NO;
+            }
+            else{
+                UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"西邮图书馆没有权限访问您的照片" message:@"请在隐私中允许西邮图书馆访问照片" preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+                [alertController addAction:yesAction];
+                [self presentViewController:alertController animated:YES completion:nil];
+            }
+        }];
+        UIAlertAction *cameraAction=[UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+                UIImagePickerController *imagepickerController=[[UIImagePickerController alloc]init];
+                imagepickerController.sourceType=UIImagePickerControllerSourceTypeCamera;
+                imagepickerController.allowsEditing=YES;
+                imagepickerController.delegate=self;
+                [self presentViewController:imagepickerController animated:YES completion:nil];
+            }
+            else{
+                UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"西邮图书馆没有权限访问您的相机" message:@"请在隐私中允许西邮图书馆访问相机" preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+                [alertController addAction:yesAction];
+                [self presentViewController:alertController animated:YES completion:nil];
+            }
+        }];
+        
+        UIAlertAction *cancelAction=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+        [alertController addAction:selectAction];
+        [alertController addAction:cameraAction];
+        [alertController addAction:cancelAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
+    UIImage *image=[info objectForKey:@"UIImagePickerControllerEditedImage"];
+    self.headImage=image;
+    [self.TableView reloadData];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)pressloginButton{
@@ -143,17 +189,14 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [self.TableView deselectRowAtIndexPath:[self.TableView indexPathForSelectedRow] animated:NO];
-    self.navigationController.navigationBarHidden=YES;
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     AppDelegate *Delegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
     if(self.isLogin!=Delegate.islogin){
         self.isLogin=Delegate.islogin;
         if (self.isLogin==YES) {
-            NSCharacterSet *characterset=[[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> .~"]invertedSet];
-            self.session=[Delegate.session stringByAddingPercentEncodingWithAllowedCharacters:characterset];
-            [self getdata];
+            self.myModel=Delegate.myModel;
         }
-        else
-            [self.TableView reloadData];
+        [self.TableView reloadData];
     }
 }
 

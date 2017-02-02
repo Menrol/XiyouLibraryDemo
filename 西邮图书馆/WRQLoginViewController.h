@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@interface WRQLoginViewController : UIViewController
+@interface WRQLoginViewController : UIViewController<UITextFieldDelegate>
 
 @end

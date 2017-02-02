@@ -11,7 +11,6 @@
 #import "WRQSetViewController.h"
 #import "AppDelegate.h"
 
-@interface WRQMyViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate>
+@interface WRQMyViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 @property(assign,nonatomic)BOOL isLogin;
-@property(copy,nonatomic)NSString *session;
 @end

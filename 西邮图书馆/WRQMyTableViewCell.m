@@ -23,7 +23,6 @@
         self.headImage=[[UIImageView alloc]initWithFrame:CGRectMake(W*0.05, H*0.11, H*0.1, H*0.1)];
         self.headImage.layer.masksToBounds=YES;
         self.headImage.layer.cornerRadius=H*0.05;
-        self.headImage.image=[UIImage imageNamed:@"nomalhead.png"];
         self.headImage.backgroundColor=[UIColor whiteColor];
         self.headImage.contentMode=UIViewContentModeScaleToFill;
         [self.contentView addSubview:self.headImage];
@@ -34,10 +33,7 @@
         [self.contentView addSubview:self.loginLabel];
         
         self.loginButton=[UIButton buttonWithType:UIButtonTypeCustom];
-        self.loginButton.frame=CGRectMake(W*0.85, H*0.05, H*0.06, H*0.06);
-        self.loginButton.layer.masksToBounds=YES;
-        self.loginButton.layer.cornerRadius=H*0.03;
-        self.loginButton.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+        self.loginButton.frame=CGRectMake(W*0.87, H*0.05, H*0.05, H*0.05);
         [self.loginButton setImage:[UIImage imageNamed:@"login.png"] forState:UIControlStateNormal];
         self.loginButton.contentMode=UIViewContentModeCenter;
         [self.contentView addSubview:self.loginButton];

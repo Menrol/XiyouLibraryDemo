@@ -75,6 +75,7 @@
     self.ScrollView.showsVerticalScrollIndicator=NO;
     self.ScrollView.bounces=NO;
     self.ScrollView.pagingEnabled=YES;
+    self.ScrollView.directionalLockEnabled=YES;
     self.ScrollView.contentSize=CGSizeMake(W*2, H-64-49);
     self.ScrollView.delegate=self;
     self.ScrollView.tag=103;
@@ -87,6 +88,7 @@
                 self.NoticeTableView.tag=101;
                 self.NoticeTableView.delegate=self;
                 self.NoticeTableView.dataSource=self;
+                self.NoticeTableView.contentInset=UIEdgeInsetsMake(H*0.01, 0, 0, 0);
                 self.NoticeTableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectZero];
                 [self.ScrollView addSubview:self.NoticeTableView];
                 break;
@@ -95,6 +97,7 @@
                 self.NewsTableView.tag=102;
                 self.NewsTableView.delegate=self;
                 self.NewsTableView.dataSource=self;
+                self.NewsTableView.contentInset=UIEdgeInsetsMake(H*0.01, 0, 0, 0);
                 self.NewsTableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectZero];
                 [self.ScrollView addSubview:self.NewsTableView];
                 break;
@@ -325,6 +328,7 @@
             {
                 self.preBtn.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
                 self.preBtn=btn;
+                [self.NoticeTableView setContentOffset:CGPointMake(0, H*0.01)];
             }
         }
         else if(scrollView.contentOffset.x==scrollView.bounds.size.width)
@@ -335,12 +339,8 @@
             {
                 self.preBtn.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
                 self.preBtn=btn;
+                [self.NewsTableView setContentOffset:CGPointMake(0, H*0.01)];
             }
-        }
-    }
-    else if (scrollView.tag==101){
-        if(scrollView.contentOffset.y<0){
-            [self.NoticeTableView.mj_header beginRefreshing];
         }
     }
 }

@@ -10,7 +10,9 @@
 #import "WRQTabViewController.h"
 #import "Masonry.h"
 #import "AFNetworking.h"
+#import "YYModel.h"
 #import "WRQMyViewController.h"
+#import "WRQMyModel.h"
 #define W [UIScreen mainScreen].bounds.size.width
 #define H [UIScreen mainScreen].bounds.size.height
 
@@ -20,6 +22,7 @@
 @property(strong,nonatomic)UIButton *LoginButton;
 @property(strong,nonatomic)UIButton *returnButton;
 @property(copy,nonatomic)NSString *sessionstr;
+@property(strong,nonatomic)UIActivityIndicatorView *activityindicatorView;
 @end
 
 @implementation WRQLoginViewController
@@ -69,6 +72,8 @@
     self.PasswordTextField.borderStyle=UITextBorderStyleNone;
     self.PasswordTextField.placeholder=@"请输入密码";
     self.PasswordTextField.secureTextEntry=YES;
+    self.PasswordTextField.returnKeyType=UIReturnKeyGo;
+    self.PasswordTextField.delegate=self;
     [self.view addSubview:self.IDTextField];
     [self.view addSubview:self.PasswordTextField];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(change:) name:UITextFieldTextDidChangeNotification object:self.IDTextField];
@@ -93,6 +98,8 @@
     self.LoginButton.titleLabel.font=[UIFont systemFontOfSize:22];
     [self.view addSubview:self.LoginButton];
     // Do any additional setup after loading the view.
+    
+    [self setactivityindicatorView];
 }
 
 - (void)change:(NSNotification *)notification{
@@ -114,17 +121,51 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)setactivityindicatorView{
+    self.activityindicatorView=[[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    self.activityindicatorView.hidesWhenStopped=YES;
+    self.activityindicatorView.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    [self.view addSubview:self.activityindicatorView];
+    [self.activityindicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.view);
+        make.size.mas_equalTo(CGSizeMake(H*0.1, H*0.1));
+    }];
+    
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    [self pressLogin];
+    return YES;
+}
+
+- (void)getdetaidata:(NSString *)sessionstr{
+    AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
+    [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/user/info?session=%@",sessionstr] parameters:nil progress:nil
+         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+             NSDictionary *Detaildic=[responseObject objectForKey:@"Detail"];
+             WRQMyModel *myModel=[WRQMyModel yy_modelWithDictionary:Detaildic];
+             AppDelegate *Delegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
+             Delegate.myModel=myModel;
+             [self.activityindicatorView stopAnimating];
+             [self dismissViewControllerAnimated:YES completion:nil];
+             self.IDTextField.text=nil;
+             self.PasswordTextField.text=nil;
+             [self.PasswordTextField resignFirstResponder];
+         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+             
+         }];
+}
+
 - (void)login:(NSString *)session and:(BOOL)result{
     if (result==YES) {
         AppDelegate *Delegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
         Delegate.islogin=YES;
-        Delegate.session=session;
-        [self dismissViewControllerAnimated:YES completion:nil];
-        self.IDTextField.text=nil;
-        self.PasswordTextField.text=nil;
-        [self.PasswordTextField resignFirstResponder];
+        NSCharacterSet *charactSet=[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> .~"].invertedSet;
+        NSString *sessionstr=[session stringByAddingPercentEncodingWithAllowedCharacters:charactSet];
+        [self getdetaidata:sessionstr];
     }
     else{
+        [self.activityindicatorView stopAnimating];
         UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"用户名或密码不正确" message:nil preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *yesaction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
         [alertController addAction:yesaction];
@@ -134,13 +175,17 @@
 }
 
 -(void)pressLogin{
+    [self.PasswordTextField resignFirstResponder];
+    self.LoginButton.userInteractionEnabled=NO;
+    self.LoginButton.alpha=0.5;
+    self.LoginButton.backgroundColor=[UIColor grayColor];
+    [self.activityindicatorView startAnimating];
     NSString *usernamestr=self.IDTextField.text;
     NSString *passwordstr=self.PasswordTextField.text;
     AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
     [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/user/login?username=%@&password=%@",usernamestr,passwordstr] parameters:nil progress:nil
       success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
           self.sessionstr=[responseObject objectForKey:@"Detail"];
-          NSLog(@"ste=%@",self.sessionstr);
           id value=[responseObject objectForKey:@"Result"];
           [self login:self.sessionstr and:[value boolValue]];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

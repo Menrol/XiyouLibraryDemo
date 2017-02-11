@@ -7,11 +7,13 @@
 //
 
 #import "WRQQuestionsendViewController.h"
+#import "Masonry.h"
 #define W [UIScreen mainScreen].bounds.size.width
 #define H [UIScreen mainScreen].bounds.size.height
 
 @interface WRQQuestionsendViewController ()
 @property(strong,nonatomic)UITextView *SendquestionTextView;
+@property(strong,nonatomic)UILabel *placeholderLabel;
 @end
 
 @implementation WRQQuestionsendViewController
@@ -31,9 +33,31 @@
     self.navigationItem.rightBarButtonItem=SendButton;
     
     self.SendquestionTextView=[[UITextView alloc]initWithFrame:CGRectMake(0, 0, W, H*0.4)];
-    self.SendquestionTextView.text=@"请留下宝贵的意见，我们将不断完善，谢谢";
+    self.SendquestionTextView.font=[UIFont systemFontOfSize:15];
     [self.view addSubview:self.SendquestionTextView];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(change:) name:UITextViewTextDidChangeNotification object:self.SendquestionTextView];
+    
+    self.placeholderLabel=[[UILabel alloc]init];
+    self.placeholderLabel.text=@"请留下宝贵的意见，我们将不断完善，谢谢";
+    self.placeholderLabel.font=[UIFont systemFontOfSize:15];
+    self.placeholderLabel.textColor=[UIColor colorWithRed:0.74 green:0.78 blue:0.84 alpha:1.00];
+    [self.SendquestionTextView addSubview:self.placeholderLabel];
+    [self.placeholderLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.SendquestionTextView).with.offset(H*0.01);
+        make.left.equalTo(self.SendquestionTextView).with.offset(0);
+        make.size.mas_equalTo(CGSizeMake(W*0.8, H*0.03));
+    }];
     // Do any additional setup after loading the view.
+}
+
+- (void)change:(NSNotification *)notification{
+    if (self.SendquestionTextView.text.length>0) {
+        self.placeholderLabel.hidden=YES;
+    }
+    else{
+        self.placeholderLabel.hidden=NO;
+    }
 }
 
 - (void)return{
@@ -42,6 +66,15 @@
 
 - (void)send{
     [self.SendquestionTextView resignFirstResponder];
+    UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"发送成功" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:yesAction];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    self.SendquestionTextView.text=nil;
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{

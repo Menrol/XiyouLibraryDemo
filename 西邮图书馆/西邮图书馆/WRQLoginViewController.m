@@ -23,6 +23,7 @@
 @property(strong,nonatomic)UIButton *returnButton;
 @property(copy,nonatomic)NSString *sessionstr;
 @property(strong,nonatomic)UIActivityIndicatorView *activityindicatorView;
+@property(strong,nonatomic)UIImageView *headImage;
 @end
 
 @implementation WRQLoginViewController
@@ -30,12 +31,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor=[UIColor whiteColor];
-    UIImageView *Booklogoimage=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"nomalhead.png"]];
-    Booklogoimage.frame=CGRectMake((W-H*0.15)/2, H*0.11, H*0.15, H*0.15);
-    Booklogoimage.layer.masksToBounds=YES;
-    Booklogoimage.layer.cornerRadius=H*0.075;
-    Booklogoimage.backgroundColor=[UIColor whiteColor];
-    [self.view addSubview:Booklogoimage];
+    self.headImage=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"nomalhead.png"]];
+    self.headImage.frame=CGRectMake((W-H*0.15)/2, H*0.11, H*0.15, H*0.15);
+    self.headImage.layer.masksToBounds=YES;
+    self.headImage.layer.cornerRadius=H*0.075;
+    self.headImage.backgroundColor=[UIColor whiteColor];
+    [self.view addSubview:self.headImage];
     
     self.returnButton=[UIButton buttonWithType:UIButtonTypeCustom];
     [self.returnButton setImage:[UIImage imageNamed:@"close.png"] forState:UIControlStateNormal];
@@ -103,10 +104,24 @@
 }
 
 - (void)change:(NSNotification *)notification{
+    NSUserDefaults *userDefaults=[NSUserDefaults standardUserDefaults];
+    NSString *ID=[userDefaults objectForKey:@"ID"];
+    NSData *headImagedata=[userDefaults objectForKey:@"headimage"];
     if (self.IDTextField.text.length!=0&&self.PasswordTextField.text.length!=0) {
         self.LoginButton.alpha=1;
         self.LoginButton.userInteractionEnabled=YES;
         self.LoginButton.backgroundColor=[UIColor redColor];
+    }
+    else if ([self.IDTextField.text isEqualToString:ID]){
+        if (headImagedata!=nil) {
+            UIImage *headimage=[UIImage imageWithData:headImagedata];
+            self.headImage.image=headimage;
+        }
+        else
+            self.headImage.image=[UIImage imageNamed:@"nomalhead.png"];
+    }
+    else if (![self.IDTextField.text isEqualToString:ID]){
+        self.headImage.image=[UIImage imageNamed:@"nomalhead.png"];
     }
     else{
         self.LoginButton.alpha=0.5;
@@ -129,8 +144,7 @@
     [self.activityindicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.view);
         make.size.mas_equalTo(CGSizeMake(H*0.1, H*0.1));
-    }];
-    
+    }];    
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField{
@@ -162,6 +176,7 @@
         Delegate.islogin=YES;
         NSCharacterSet *charactSet=[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> .~"].invertedSet;
         NSString *sessionstr=[session stringByAddingPercentEncodingWithAllowedCharacters:charactSet];
+        Delegate.session=sessionstr;
         [self getdetaidata:sessionstr];
     }
     else{
@@ -181,7 +196,8 @@
     self.LoginButton.backgroundColor=[UIColor grayColor];
     [self.activityindicatorView startAnimating];
     NSString *usernamestr=self.IDTextField.text;
-    NSString *passwordstr=self.PasswordTextField.text;
+    NSCharacterSet *charactSet=[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> .~"].invertedSet;
+    NSString *passwordstr=[self.PasswordTextField.text stringByAddingPercentEncodingWithAllowedCharacters:charactSet];
     AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
     [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/user/login?username=%@&password=%@",usernamestr,passwordstr] parameters:nil progress:nil
       success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -191,6 +207,19 @@
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    NSUserDefaults *userDefaults=[NSUserDefaults standardUserDefaults];
+    if(![userDefaults objectForKey:@"isFirst"]){
+        NSString *ID=[userDefaults objectForKey:@"ID"];
+        self.IDTextField.text=ID;
+        NSData *headimagedata=[userDefaults objectForKey:@"headimage"];
+        if (headimagedata!=nil) {
+            UIImage *headimage=[UIImage imageWithData:headimagedata];
+            self.headImage.image=headimage;
+        }
+    }
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{

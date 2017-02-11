@@ -12,6 +12,7 @@
 #import "WRQNoticeModel.h"
 #import "MJRefresh.h"
 #import "YYModel.h"
+#import "Masonry.h"
 #import "WRQSearchViewController.h"
 #import "WRQNewsModel.h"
 #import "WRQDetailViewController.h"
@@ -42,35 +43,48 @@
     [self getNewsdata];
 
     self.view.backgroundColor=[UIColor whiteColor];
+    
     self.navigationItem.title=@"首页";
-    self.navigationController.navigationBar.barTintColor=[UIColor colorWithRed:0.39 green:0.73 blue:0.94 alpha:1.00];
-    self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
-    [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],NSForegroundColorAttributeName,nil]];
     
     UIBarButtonItem *searchButton=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"search.png"] style:UIBarButtonItemStyleDone target:self action:@selector(search)];
     self.navigationItem.rightBarButtonItem=searchButton;
     
+    UIView *btnbackground=[[UIView alloc]initWithFrame:CGRectMake(0, 64, W, H*0.12)];
+    btnbackground.backgroundColor=[UIColor whiteColor];
+    btnbackground.userInteractionEnabled=YES;
+    [self.view addSubview:btnbackground];
+    
     UIButton *NoticeBtn=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-    NoticeBtn.frame=CGRectMake(0, 64, W/2.0, H*0.06);
+    NoticeBtn.frame=CGRectMake(W*0.25, H*0.01, W*0.25, H*0.08);
     [NoticeBtn setTitle:@"公告信息" forState:UIControlStateNormal];
-    NoticeBtn.tintColor=[UIColor blackColor];
-    NoticeBtn.backgroundColor=[UIColor whiteColor];
+    NoticeBtn.backgroundColor=[UIColor colorWithRed:0.50 green:0.85 blue:0.77 alpha:1.00];
+    [NoticeBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    NoticeBtn.layer.masksToBounds=YES;
+    NoticeBtn.layer.cornerRadius=25;
     NoticeBtn.tag=101;
+    NoticeBtn.titleLabel.font=[UIFont boldSystemFontOfSize:16];
     self.preBtn=NoticeBtn;
     [NoticeBtn addTarget:self action:@selector(press:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:NoticeBtn];
+    [btnbackground addSubview:NoticeBtn];
     
     UIButton *NewsBtn=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-    NewsBtn.frame=CGRectMake(W/2.0, 64, W/2.0, H*0.06);
+    NewsBtn.frame=CGRectMake(W*0.5, H*0.01, W*0.25, H*0.08);
     [NewsBtn setTitle:@"新闻信息" forState:UIControlStateNormal];
-    NewsBtn.tintColor=[UIColor blackColor];
-    NewsBtn.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
+    NewsBtn.backgroundColor=[UIColor whiteColor];
+    [NewsBtn setTitleColor:[UIColor colorWithRed:0.86 green:0.86 blue:0.88 alpha:1.00] forState:UIControlStateNormal];
     [NewsBtn addTarget:self action:@selector(press:) forControlEvents:UIControlEventTouchUpInside];
+    NewsBtn.layer.masksToBounds=YES;
+    NewsBtn.layer.cornerRadius=25;
     NewsBtn.tag=102;
-    [self.view addSubview:NewsBtn];
+    NewsBtn.titleLabel.font=[UIFont boldSystemFontOfSize:16];
+    [btnbackground addSubview:NewsBtn];
+    
+    UIImageView *library=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"library"]];
+    library.frame=CGRectMake(W*0.05, H*0.14+64, W*0.9, H*0.3);
+    [self.view addSubview:library];
     
     
-    self.ScrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 64+H*0.06, W, H-64-49-H*0.06)];
+    self.ScrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, H*0.46+64, W, H-64-49-H*0.46)];
     self.ScrollView.showsHorizontalScrollIndicator=NO;
     self.ScrollView.showsVerticalScrollIndicator=NO;
     self.ScrollView.bounces=NO;
@@ -84,21 +98,27 @@
     for (int i=0; i<2; i++) {
         switch (i) {
             case 0:
-                self.NoticeTableView=[[UITableView alloc]initWithFrame:CGRectMake(W*i, 0, W, H-64-49-H*0.06)];
+                self.NoticeTableView=[[UITableView alloc]initWithFrame:CGRectMake(W*i, 0, W, H-64-49-H*0.46)];
                 self.NoticeTableView.tag=101;
                 self.NoticeTableView.delegate=self;
                 self.NoticeTableView.dataSource=self;
                 self.NoticeTableView.contentInset=UIEdgeInsetsMake(H*0.01, 0, 0, 0);
+                [self.NoticeTableView setContentOffset:CGPointMake(0, 0)];
                 self.NoticeTableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectZero];
+                self.NoticeTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
+                self.NoticeTableView.backgroundColor=[UIColor clearColor];
                 [self.ScrollView addSubview:self.NoticeTableView];
                 break;
             case 1:
-                self.NewsTableView=[[UITableView alloc]initWithFrame:CGRectMake(W*i, 0, W, H-64-49-H*0.06)];
+                self.NewsTableView=[[UITableView alloc]initWithFrame:CGRectMake(W*i, 0, W, H-64-49-H*0.46)];
                 self.NewsTableView.tag=102;
                 self.NewsTableView.delegate=self;
                 self.NewsTableView.dataSource=self;
                 self.NewsTableView.contentInset=UIEdgeInsetsMake(H*0.01, 0, 0, 0);
+                [self.NewsTableView setContentOffset:CGPointMake(0, 0)];
                 self.NewsTableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectZero];
+                self.NewsTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
+                self.NewsTableView.backgroundColor=[UIColor clearColor];
                 [self.ScrollView addSubview:self.NewsTableView];
                 break;
         }
@@ -109,7 +129,6 @@
     [self setNoticerefreshHeader];
     
     [self setNewsrefreshHeader];
-
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -128,12 +147,12 @@
     if(tableView.tag==102){
         WRQNewsModel *newsModel=self.NewsModelArray[indexPath.row];
         CGSize size=[newsModel.size CGSizeValue];
-        return size.height;
+        return size.height+H*0.04;
     }
     else{
         NSNumber *Rowheight=self.RowheightArray[indexPath.row];
         NSInteger height=[Rowheight integerValue];
-        return height;
+        return height+H*0.04;
     }
 }
 
@@ -144,10 +163,21 @@
             cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"NoticeCell"];
             cell.textLabel.font=[UIFont systemFontOfSize:15];
             cell.textLabel.numberOfLines=0;
+            cell.backgroundColor=[UIColor clearColor];
         }
         cell.imageView.image=[UIImage imageNamed:@"point"];
         WRQNoticeModel *NoticeModel=[[WRQNoticeModel alloc]init];
         NoticeModel=self.NoticeModelArray[indexPath.row];
+        NSNumber *Rowheight=self.RowheightArray[indexPath.row];
+        NSInteger height=[Rowheight integerValue];
+        UIButton *background=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+        background.backgroundColor=[UIColor whiteColor];
+        cell.backgroundView=background;
+        [background mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(cell).with.offset(0);
+            make.left.equalTo(cell).with.offset(W*0.03);
+            make.size.mas_equalTo(CGSizeMake(W*0.94, height+H*0.02));
+        }];
         cell.textLabel.text=NoticeModel.finaltitle;
         return cell;
     }
@@ -157,9 +187,19 @@
             cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"NewsCell"];
             cell.textLabel.font=[UIFont systemFontOfSize:15];
             cell.textLabel.numberOfLines=0;
+            cell.backgroundColor=[UIColor clearColor];
         }
         cell.imageView.image=[UIImage imageNamed:@"point"];
         WRQNewsModel *newsModel=self.NewsModelArray[indexPath.row];
+        CGSize size=[newsModel.size CGSizeValue];
+        UIButton *background=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+        background.backgroundColor=[UIColor whiteColor];
+        cell.backgroundView=background;
+        [background mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(cell).with.offset(0);
+            make.left.equalTo(cell).with.offset(W*0.03);
+            make.size.mas_equalTo(CGSizeMake(W*0.94, size.height+H*0.02));
+        }];
         cell.textLabel.text=newsModel.finaltitle;
         return cell;
     }
@@ -182,10 +222,36 @@
     self.hidesBottomBarWhenPushed=NO;
 }
 
+//去掉导航栏黑线
+- (UIImageView *)findHairlineImageViewUnder:(UIView *)view {
+    if ([view isKindOfClass:UIImageView.class] && view.bounds.size.height <= 1.0) {
+        return (UIImageView *)view;
+    }
+    for (UIView *subview in view.subviews) {
+        UIImageView *imageView = [self findHairlineImageViewUnder:subview];
+        if (imageView) {
+            return imageView;
+        } 
+    } 
+    return nil; 
+}
+
 - (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     [self.NoticeTableView deselectRowAtIndexPath:[self.NoticeTableView indexPathForSelectedRow] animated:NO];
     [self.NewsTableView deselectRowAtIndexPath:[self.NewsTableView indexPathForSelectedRow] animated:NO];
+    [self findHairlineImageViewUnder:self.navigationController.navigationBar].hidden=YES;
+    self.navigationController.navigationBar.barTintColor=[UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor=[UIColor colorWithRed:0.86 green:0.86 blue:0.88 alpha:1.00];
+    [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor blackColor],NSForegroundColorAttributeName,nil]];
+    [self.tabBarController.tabBar setShadowImage:[UIImage new]];
+    [self.tabBarController.tabBar setBackgroundImage:[UIImage new]];
 }
+
+//- (void)viewWillDisappear:(BOOL)animated{
+//    [super viewDidDisappear:animated];
+//    [self findHairlineImageViewUnder:self.navigationController.navigationBar].hidden=NO;
+//}
 
 - (void)search{
     WRQSearchViewController *searchViewController=[[WRQSearchViewController alloc]init];
@@ -218,11 +284,13 @@
              }
              self.NoticeIsfinsh=YES;
              [self.NoticeTableView.mj_header endRefreshing];
+             [self.NoticeTableView setContentOffset:CGPointMake(0, 0)];
              if (self.NoticeIsfinsh&&self.NewsIsfinsh) {
                  [self.LoadView stopAnimating];
                  self.LoadView.hidden=YES;
                  [self.NoticeTableView reloadData];
                  [self.NewsTableView reloadData];
+                 self.view.backgroundColor=[UIColor colorWithRed:0.95 green:0.97 blue:0.98 alpha:1.00];
              }
          }
          failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -249,11 +317,13 @@
              }
              self.NewsIsfinsh=YES;
              [self.NewsTableView.mj_header endRefreshing];
+             [self.NewsTableView setContentOffset:CGPointMake(0, 0)];
              if (self.NoticeIsfinsh&&self.NewsIsfinsh) {
                  [self.LoadView stopAnimating];
                  self.LoadView.hidden=YES;
                  [self.NewsTableView reloadData];
                  [self.NoticeTableView reloadData];
+                 self.view.backgroundColor=[UIColor colorWithRed:0.95 green:0.97 blue:0.98 alpha:1.00];
              }
          }
          failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -262,31 +332,15 @@
 }
 
 - (void)setNoticerefreshHeader{
-    self.NoticeRefreshHeader=[MJRefreshGifHeader headerWithRefreshingBlock:^{
+    self.NoticeTableView.mj_header=[MJRefreshNormalHeader headerWithRefreshingBlock:^{
         [self getNoticedata];
     }];
-    self.NoticeTableView.mj_header=self.NoticeRefreshHeader;
-    NSMutableArray *imagesArray=[[NSMutableArray alloc]init];
-    for (int i=1; i<=24; i++) {
-        [imagesArray addObject:[UIImage imageNamed:[NSString stringWithFormat:@"1-%d",i]]];
-    }
-    [self.NoticeRefreshHeader setImages:imagesArray forState:MJRefreshStateRefreshing];
-    self.NoticeRefreshHeader.lastUpdatedTimeLabel.hidden=YES;
-    self.NoticeRefreshHeader.stateLabel.hidden=YES;
 }
 
 - (void)setNewsrefreshHeader{
-    self.NewsRefreshHeader=[MJRefreshGifHeader headerWithRefreshingBlock:^{
+    self.NewsTableView.mj_header=[MJRefreshNormalHeader headerWithRefreshingBlock:^{
         [self getNewsdata];
     }];
-    self.NewsTableView.mj_header=self.NewsRefreshHeader;
-    NSMutableArray *imagesArray=[[NSMutableArray alloc]init];
-    for (int i=1; i<=24; i++) {
-        [imagesArray addObject:[UIImage imageNamed:[NSString stringWithFormat:@"1-%d",i]]];
-    }
-    [self.NewsRefreshHeader setImages:imagesArray forState:MJRefreshStateRefreshing];
-    self.NewsRefreshHeader.lastUpdatedTimeLabel.hidden=YES;
-    self.NewsRefreshHeader.stateLabel.hidden=YES;
 }
 
 - (void)setLoadAnimation{
@@ -304,15 +358,19 @@
 
 - (void)press:(UIButton *)btn{
     if(self.preBtn!=btn){
-        btn.backgroundColor=[UIColor whiteColor];
-        self.preBtn.backgroundColor=[UIColor grayColor];
+        [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        btn.backgroundColor=[UIColor colorWithRed:0.50 green:0.85 blue:0.77 alpha:1.00];
+        self.preBtn.backgroundColor=[UIColor whiteColor];
+        [self.preBtn setTitleColor:[UIColor colorWithRed:0.86 green:0.86 blue:0.88 alpha:1.00] forState:UIControlStateNormal];
         if(btn.tag==101)
         {
             [self.ScrollView setContentOffset:CGPointMake(0, 0)];
+            [self.NoticeTableView setContentOffset:CGPointMake(0, 0)];
         }
         else
         {
             [self.ScrollView setContentOffset:CGPointMake(self.ScrollView.bounds.size.width, 0)];
+            [self.NewsTableView setContentOffset:CGPointMake(0, 0)];
         }
     }
     self.preBtn=btn;
@@ -323,23 +381,27 @@
         if(scrollView.contentOffset.x==0)
         {
             UIButton *btn=[self.view viewWithTag:101];
-            btn.backgroundColor=[UIColor whiteColor];
+            [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            btn.backgroundColor=[UIColor colorWithRed:0.50 green:0.85 blue:0.77 alpha:1.00];
             if(self.preBtn!=btn)
             {
-                self.preBtn.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
+                self.preBtn.backgroundColor=[UIColor whiteColor];
+                [self.preBtn setTitleColor:[UIColor colorWithRed:0.86 green:0.86 blue:0.88 alpha:1.00] forState:UIControlStateNormal];
                 self.preBtn=btn;
-                [self.NoticeTableView setContentOffset:CGPointMake(0, H*0.01)];
+                [self.NoticeTableView setContentOffset:CGPointMake(0, 0)];
             }
         }
         else if(scrollView.contentOffset.x==scrollView.bounds.size.width)
         {
             UIButton *btn=[self.view viewWithTag:102];
-            btn.backgroundColor=[UIColor whiteColor];
+            [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            btn.backgroundColor=[UIColor colorWithRed:0.50 green:0.85 blue:0.77 alpha:1.00];
             if(self.preBtn!=btn)
             {
-                self.preBtn.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
+                self.preBtn.backgroundColor=[UIColor whiteColor];
+                [self.preBtn setTitleColor:[UIColor colorWithRed:0.86 green:0.86 blue:0.88 alpha:1.00] forState:UIControlStateNormal];
                 self.preBtn=btn;
-                [self.NewsTableView setContentOffset:CGPointMake(0, H*0.01)];
+                [self.NewsTableView setContentOffset:CGPointMake(0, 0)];
             }
         }
     }

@@ -27,9 +27,12 @@
     [super viewDidLoad];
     self.view.backgroundColor=[UIColor whiteColor];
     self.navigationItem.title=@"搜索";
-    self.navigationController.navigationBar.barTintColor=[UIColor colorWithRed:0.39 green:0.73 blue:0.94 alpha:1.00];
-    self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
-    [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],NSForegroundColorAttributeName,nil]];
+    self.navigationController.navigationBar.barTintColor=[UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor=[UIColor colorWithRed:0.74 green:0.78 blue:0.84 alpha:1.00];
+    [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor blackColor],NSForegroundColorAttributeName,nil]];
+    
+    UIBarButtonItem *ReturnButton=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"return.png"] style:UIBarButtonItemStyleDone target:self action:@selector(return)];
+    self.navigationItem.leftBarButtonItem=ReturnButton;
     
     self.searchbar=[[UISearchBar alloc]initWithFrame:CGRectMake(0, 64, W, H*0.06)];
     self.searchbar.placeholder=@"请输入书名关键字";
@@ -173,6 +176,9 @@
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
+- (void)return{
+    [self.navigationController popViewControllerAnimated:YES];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

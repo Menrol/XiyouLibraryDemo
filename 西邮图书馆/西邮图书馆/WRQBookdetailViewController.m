@@ -20,6 +20,8 @@
 #import "WRQCirculationModel.h"
 #import "WRQReferbooksModel.h"
 #import "UIImageView+WebCache.h"
+#import "AppDelegate.h"
+#import "WRQLoginViewController.h"
 #define W [UIScreen mainScreen].bounds.size.width
 #define H [UIScreen mainScreen].bounds.size.height
 
@@ -41,9 +43,9 @@
     
     self.view.backgroundColor=[UIColor whiteColor];
     self.navigationItem.title=@"书籍详情";
-    self.navigationController.navigationBar.barTintColor=[UIColor colorWithRed:0.39 green:0.73 blue:0.94 alpha:1.00];
-    self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
-    [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],NSForegroundColorAttributeName,nil]];
+    self.navigationController.navigationBar.barTintColor=[UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor=[UIColor colorWithRed:0.74 green:0.78 blue:0.84 alpha:1.00];
+    [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor blackColor],NSForegroundColorAttributeName,nil]];
     
     self.returnBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     [self.returnBtn setImage:[UIImage imageNamed:@"return-1.png"] forState:UIControlStateNormal];
@@ -148,6 +150,7 @@
         UITableViewCell *cell=[[UITableViewCell alloc]init];
         cell.textLabel.font=[UIFont boldSystemFontOfSize:20];
         cell.textLabel.numberOfLines=0;
+        cell.selectionStyle=UITableViewCellSelectionStyleNone;
         WRQBookdetailModel *bookdetailModel=self.bookdetailModelArray[indexPath.row];
         cell.textLabel.text=bookdetailModel.Title;
         return cell;
@@ -170,7 +173,7 @@
             cell.selectionStyle=UITableViewCellSelectionStyleNone;
         }
         WRQCirculationModel *circulationModel=self.circulationModelArray[indexPath.row];
-        if (circulationModel.Date==nil) {
+        if (circulationModel.Date.length==0) {
             cell.dateLabel.hidden=YES;
             cell.datetitleLabel.hidden=YES;
             UIButton *btn=[UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -361,7 +364,40 @@
 }
 
 - (void)presscollect{
-    
+    AppDelegate *Delegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
+    if (Delegate.islogin==YES) {
+        AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
+        [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/user/addFav?session=%@",Delegate.session] parameters:nil progress:nil
+        success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            NSLog(@"%@",responseObject);
+            NSString *result=[responseObject objectForKey:@"Detail"];
+            if ([result isEqualToString:@"ADDED_SUCCEED"]) {
+                UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"收藏成功" message:nil preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+                [alertController addAction:yesAction];
+                [self presentViewController:alertController animated:YES completion:nil];
+            }
+            else if ([result isEqualToString:@"ALREADY_IN_FAVORITE"]){
+                UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"已收藏" message:nil preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+                [alertController addAction:yesAction];
+                [self presentViewController:alertController animated:YES completion:nil];
+            }
+            else if ([result isEqualToString:@"ADDED_FAILED"]){
+                UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"收藏失败" message:nil preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+                [alertController addAction:yesAction];
+                [self presentViewController:alertController animated:YES completion:nil];
+            }
+        }
+        failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            
+        }];
+    }
+    else{
+        WRQLoginViewController *loginViewController=[[WRQLoginViewController alloc]init];
+        [self presentViewController:loginViewController animated:YES completion:nil];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated{

@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WRQMyView.h"
 
 @interface WRQMyTableViewCell : UITableViewCell
 @property(strong,nonatomic)UIImageView *headImage;
 @property(strong,nonatomic)UILabel *nameLabel;
-@property(strong,nonatomic)UILabel *classLabel;
-@property(strong,nonatomic)UILabel *numberLabel;
+@property(strong,nonatomic)WRQMyView *myView;
 @property(strong,nonatomic)UIButton *loginButton;
 @property(strong,nonatomic)UILabel *loginLabel;
 @end

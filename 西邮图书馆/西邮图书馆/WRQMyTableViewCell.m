@@ -7,6 +7,7 @@
 //
 
 #import "WRQMyTableViewCell.h"
+#import "Masonry.h"
 #define W [UIScreen mainScreen].bounds.size.width
 #define H [UIScreen mainScreen].bounds.size.height
 
@@ -20,41 +21,49 @@
 - (instancetype)init{
     self=[super init];
     if (self) {
-        self.headImage=[[UIImageView alloc]initWithFrame:CGRectMake(W*0.05, H*0.11, H*0.1, H*0.1)];
+        self.headImage=[[UIImageView alloc]init];
         self.headImage.layer.masksToBounds=YES;
-        self.headImage.layer.cornerRadius=H*0.05;
+        self.headImage.layer.cornerRadius=H*0.065;
         self.headImage.backgroundColor=[UIColor whiteColor];
         self.headImage.contentMode=UIViewContentModeScaleToFill;
         [self.contentView addSubview:self.headImage];
+        [self.headImage mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(self);
+            make.top.equalTo(self).with.offset(H*0.05);
+            make.size.mas_equalTo(CGSizeMake(H*0.13, H*0.13));
+        }];
         
-        self.loginLabel=[[UILabel alloc]initWithFrame:CGRectMake(W*0.3, H*0.15, W*0.2, H*0.03)];
+        self.loginLabel=[[UILabel alloc]init];
         self.loginLabel.text=@"请登录";
+        self.loginLabel.font=[UIFont systemFontOfSize:20];
         self.loginLabel.textColor=[UIColor redColor];
         [self.contentView addSubview:self.loginLabel];
+        [self.loginLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.headImage.mas_bottom).with.offset(H*0.02);
+            make.centerX.equalTo(self);
+            make.size.mas_equalTo(CGSizeMake(W*0.17, H*0.03));
+        }];
         
         self.loginButton=[UIButton buttonWithType:UIButtonTypeCustom];
-        self.loginButton.frame=CGRectMake(W*0.87, H*0.05, H*0.05, H*0.05);
+        self.loginButton.frame=CGRectMake(W*0.87, H*0.04, H*0.05, H*0.05);
         [self.loginButton setImage:[UIImage imageNamed:@"login.png"] forState:UIControlStateNormal];
         self.loginButton.contentMode=UIViewContentModeCenter;
         [self.contentView addSubview:self.loginButton];
         
-        self.nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(W*0.3, H*0.11, W*0.3, H*0.06)];
+        self.nameLabel=[[UILabel alloc]init];
         self.nameLabel.font=[UIFont boldSystemFontOfSize:22];
         self.nameLabel.textColor=[UIColor whiteColor];
         self.nameLabel.hidden=YES;
         [self.contentView addSubview:self.nameLabel];
         
-        self.classLabel=[[UILabel alloc]initWithFrame:CGRectMake(W*0.3, H*0.18, W*0.2, H*0.03)];
-        self.classLabel.font=[UIFont systemFontOfSize:16];
-        self.classLabel.textColor=[UIColor whiteColor];
-        self.classLabel.hidden=YES;
-        [self.contentView addSubview:self.classLabel];
-        
-        self.numberLabel=[[UILabel alloc]initWithFrame:CGRectMake(W*0.55, H*0.18, W*0.2, H*0.03)];
-        self.numberLabel.font=[UIFont systemFontOfSize:16];
-        self.numberLabel.textColor=[UIColor whiteColor];
-        self.numberLabel.hidden=YES;
-        [self.contentView addSubview:self.numberLabel];
+        self.myView=[[WRQMyView alloc]init];
+        self.myView.hidden=YES;
+        [self.contentView addSubview:self.myView];
+        [self.myView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.nameLabel.mas_bottom).with.offset(H*0.04);
+            make.left.equalTo(self).with.offset(0);
+            make.size.mas_equalTo(CGSizeMake(W, H*0.1));
+        }];
     }
     return self;
 }

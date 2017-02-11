@@ -11,6 +11,7 @@
 #import "WRQQuestionViewController.h"
 #import "WRQQuestionsendViewController.h"
 #import "WRQMyViewController.h"
+#import "WRQMyModel.h"
 #import "AppDelegate.h"
 #define W [UIScreen mainScreen].bounds.size.width
 #define H [UIScreen mainScreen].bounds.size.height
@@ -38,13 +39,16 @@
     self.SetTableView.scrollEnabled=NO;
     [self.view addSubview:self.SetTableView];
     
-    self.dataArray=[[NSArray alloc]initWithObjects:@"消息通知", @"2G/3G/4G网下显示图片",@"常见问题",@"问题反馈",@"关于我们", nil];
+    self.dataArray=[[NSArray alloc]initWithObjects:@"消息通知", @"2G/3G/4G网下显示图片",@"关于我们", nil];
     
     self.alertController=[UIAlertController alertControllerWithTitle:@"确定要退出登录么？" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     UIAlertAction *yesaction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         AppDelegate *Delegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
         Delegate.islogin=NO;
         self.isLogin=NO;
+        WRQMyModel *myModel=Delegate.myModel;
+        NSUserDefaults *userDefaults=[NSUserDefaults standardUserDefaults];
+        [userDefaults setObject:myModel.ID forKey:@"ID"];
         [self.SetTableView reloadData];
     }];
     UIAlertAction *noaction=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -100,20 +104,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     WRQAboutusViewController *AboutusViewController=[[WRQAboutusViewController alloc]init];
-    WRQQuestionViewController *QuestionViewController=[[WRQQuestionViewController alloc]init];
-    WRQQuestionsendViewController *QuestionsendViewController=[[WRQQuestionsendViewController alloc]init];
-    switch (indexPath.row) {
-        case 2:
-            [self.navigationController pushViewController:QuestionViewController animated:YES];
-            break;
-            
-        case 3:
-            [self.navigationController pushViewController:QuestionsendViewController animated:YES];
-            break;
-            
-        case 4:
-            [self.navigationController pushViewController:AboutusViewController animated:YES];
-            break;
+    if(indexPath.row==2) {
+        self.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:AboutusViewController animated:YES];
+        self.hidesBottomBarWhenPushed=NO;
     }
     if (indexPath.section==1) {
         [self presentViewController:self.alertController animated:YES completion:nil];

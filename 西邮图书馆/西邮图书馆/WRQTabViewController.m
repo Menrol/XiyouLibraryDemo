@@ -23,7 +23,7 @@
     UINavigationController *MainNavigationController=[[UINavigationController alloc]initWithRootViewController:MainViewController];
     UITabBarItem *MainTabBarItem=[[UITabBarItem alloc]init];
     MainTabBarItem.title=@"主页";
-    MainTabBarItem.image=[[UIImage imageNamed:@"zhuye"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    MainTabBarItem.image=[UIImage imageNamed:@"zhuye"];
     MainTabBarItem.selectedImage=[UIImage imageNamed:@"zhuye1"];
     MainNavigationController.tabBarItem=MainTabBarItem;
     
@@ -31,7 +31,7 @@
     UINavigationController *MyNavigationController=[[UINavigationController alloc]initWithRootViewController:MyViewController];
     UITabBarItem *MyTabBarItem=[[UITabBarItem alloc]init];
     MyTabBarItem.title=@"我的";
-    MyTabBarItem.image=[[UIImage imageNamed:@"wode"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    MyTabBarItem.image=[UIImage imageNamed:@"wode"];
     MyTabBarItem.selectedImage=[UIImage imageNamed:@"wode1"];
     MyNavigationController.tabBarItem=MyTabBarItem;
     
@@ -39,17 +39,18 @@
     UINavigationController *SetNavigationController=[[UINavigationController alloc]initWithRootViewController:SetViewController];
     UITabBarItem *SetTabBarItem=[[UITabBarItem alloc]init];
     SetTabBarItem.title=@"设置";
-    SetTabBarItem.image=[[UIImage imageNamed:@"shezhi"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    SetTabBarItem.image=[UIImage imageNamed:@"shezhi"];
     SetTabBarItem.selectedImage=[UIImage imageNamed:@"shezhi1"];
     SetNavigationController.tabBarItem=SetTabBarItem;
     
     NSArray *TabArray=[[NSArray alloc]initWithObjects:MainNavigationController,MyNavigationController,SetNavigationController,nil];
     
     self.viewControllers=TabArray;
-    self.tabBar.barTintColor=[UIColor colorWithRed:0.39 green:0.73 blue:0.94 alpha:1.00];
-    self.tabBar.tintColor=[UIColor whiteColor];
-    [[UITabBarItem appearance]setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],NSForegroundColorAttributeName,nil] forState:UIControlStateNormal];
+    self.tabBar.barTintColor=[UIColor whiteColor];
+    self.tabBar.tintColor=[UIColor colorWithRed:0.74 green:0.78 blue:0.84 alpha:1.00];
+    [[UITabBarItem appearance]setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor colorWithRed:0.74 green:0.78 blue:0.84 alpha:1.00],NSForegroundColorAttributeName,nil] forState:UIControlStateNormal];
     self.tabBar.translucent=NO;
+    
     // Do any additional setup after loading the view.
 }
 

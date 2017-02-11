@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "WRQLoginViewController.h"
 #import "WRQSetViewController.h"
+#import "RSKImageCropper.h"
 #import "AppDelegate.h"
 
-@interface WRQMyViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
+@interface WRQMyViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,RSKImageCropViewControllerDelegate>
 @property(assign,nonatomic)BOOL isLogin;
 @end

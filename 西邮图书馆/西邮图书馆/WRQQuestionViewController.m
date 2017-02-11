@@ -7,6 +7,8 @@
 //
 
 #import "WRQQuestionViewController.h"
+#import "WRQQuestionTableViewCell.h"
+#import "Masonry.h"
 #define W [UIScreen mainScreen].bounds.size.width
 #define H [UIScreen mainScreen].bounds.size.height
 
@@ -20,7 +22,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
+    self.view.backgroundColor=[UIColor colorWithRed:0.97 green:0.97 blue:0.99 alpha:1.00];
     self.navigationItem.title=@"常见问题";
     self.navigationController.navigationBar.barTintColor=[UIColor colorWithRed:0.39 green:0.73 blue:0.94 alpha:1.00];
     self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
@@ -29,19 +31,28 @@
     UIBarButtonItem *ReturnButton=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"return.png"] style:UIBarButtonItemStyleDone target:self action:@selector(return)];
     self.navigationItem.leftBarButtonItem=ReturnButton;
     
-    self.TableView=[[UITableView alloc]initWithFrame:[UIScreen mainScreen].bounds style:UITableViewStyleGrouped];
+    UIImageView *questionImage=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"question.png"]];
+    [self.view addSubview:questionImage];
+    [questionImage mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view).with.offset(64);
+        make.size.mas_equalTo(CGSizeMake(W, H*0.28));
+    }];
+    
+    self.TableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 64+H*0.26, W, H-64-H*0.22) style:UITableViewStylePlain];
     self.TableView.delegate=self;
     self.TableView.dataSource=self;
     self.TableView.separatorStyle=UITableViewCellSelectionStyleNone;
+    self.TableView.backgroundColor=[UIColor clearColor];
+    self.TableView.scrollEnabled=NO;
     [self.view addSubview:self.TableView];
     
-    self.QuestionArray=[[NSArray alloc]initWithObjects:@"1.登录时学号密码都指什么？",@"2.学号和用户名安全么?",nil];
+    self.QuestionArray=[[NSArray alloc]initWithObjects:@"Q:登录时学号密码都指什么？",@"Q:学号和用户名安全么?",nil];
     self.AnswerArray=[[NSArray alloc]initWithObjects:@"学号即各位同学登录本校图书馆系统所使用的学号，密码及各位同学登陆本校图书馆系统所使用的密码。",@"为了提高查询速度和缓解服务器压力，我们只对一些图书信息进行了缓存，但不存任何用户密码信息，请放心使用。", nil];
     // Do any additional setup after loading the view.
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 2;
+    return 1;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -49,27 +60,18 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (indexPath.row==0) {
-        return H*0.05;
-    }
-    else
-        return H*0.25;
+    return H*0.26;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell=[[UITableViewCell alloc]init];
-    cell.selectionStyle=UITableViewCellSelectionStyleNone;
-    if (indexPath.row==0) {
-        UILabel *QuestionLabel=[[UILabel alloc]initWithFrame:CGRectMake(W*0.03, H*0.01, W-W*0.03, H*0.03)];
-        QuestionLabel.text=self.QuestionArray[indexPath.section];
-        [cell.contentView addSubview:QuestionLabel];
+    WRQQuestionTableViewCell *cell=[self.TableView dequeueReusableCellWithIdentifier:@"cell"];
+    if (cell==NULL) {
+        cell=[[WRQQuestionTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+        cell.selectionStyle=UITableViewCellSelectionStyleNone;
+        cell.backgroundColor=[UIColor clearColor];
     }
-    else{
-        UILabel *AnswerLabel=[[UILabel alloc]initWithFrame:CGRectMake(W*0.03, 0, W-W*0.03, H*0.1)];
-        AnswerLabel.numberOfLines=0;
-        AnswerLabel.text=self.AnswerArray[indexPath.section];
-        [cell.contentView addSubview:AnswerLabel];
-    }
+    cell.questionLabel.text=self.QuestionArray[indexPath.row];
+    cell.answerLabel.text=self.AnswerArray[indexPath.row];
     return cell;
 }
 

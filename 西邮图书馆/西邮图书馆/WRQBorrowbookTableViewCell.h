@@ -11,8 +11,7 @@
 @interface WRQBorrowbookTableViewCell : UITableViewCell
 @property(strong,nonatomic)UIImageView *BookImageView;
 @property(strong,nonatomic)UILabel *BooknameLabel;
-@property(strong,nonatomic)UILabel *NumberLabel;
 @property(strong,nonatomic)UILabel *AuthorLabel;
 @property(strong,nonatomic)UILabel *TimeLabel;
-@property(strong,nonatomic)UILabel *PublishLabel;
+@property(strong,nonatomic)UIImageView *nopictureImage;
 @end

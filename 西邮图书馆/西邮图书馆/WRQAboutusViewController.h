@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WRQAboutusViewController : UIViewController
+@interface WRQAboutusViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>
 
 @end

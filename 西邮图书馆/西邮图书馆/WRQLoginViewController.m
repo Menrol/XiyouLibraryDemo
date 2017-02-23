@@ -24,12 +24,14 @@
 @property(copy,nonatomic)NSString *sessionstr;
 @property(strong,nonatomic)UIActivityIndicatorView *activityindicatorView;
 @property(strong,nonatomic)UIImageView *headImage;
+@property(strong,nonatomic)UIView *backgroundView;
 @end
 
 @implementation WRQLoginViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.view.backgroundColor=[UIColor whiteColor];
     self.headImage=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"nomalhead.png"]];
     self.headImage.frame=CGRectMake((W-H*0.15)/2, H*0.11, H*0.15, H*0.15);
@@ -60,7 +62,7 @@
     self.IDTextField.keyboardType=UIKeyboardTypeNumberPad;
     
     UIImageView *lineupImageView=[[UIImageView alloc]initWithFrame:CGRectMake((W-W*0.79)/2, H*0.34, W*0.79, H*0.011)];
-    lineupImageView.image=[UIImage imageNamed:@"line.png"];
+    lineupImageView.image=[UIImage imageNamed:@"line-1.png"];
     [self.view addSubview:lineupImageView];
     
     self.PasswordTextField=[[UITextField alloc]initWithFrame:CGRectMake((W-W*0.79)/2, H*0.38, W*0.79, H*0.06)];
@@ -81,7 +83,7 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(change:) name:UITextFieldTextDidChangeNotification object:self.PasswordTextField];
     
     UIImageView *linedownImageView=[[UIImageView alloc]initWithFrame:CGRectMake((W-W*0.79)/2, H*0.44, W*0.79, H*0.001)];
-    linedownImageView.image=[UIImage imageNamed:@"line.png"];
+    linedownImageView.image=[UIImage imageNamed:@"line-1.png"];
     [self.view addSubview:linedownImageView];
     
     self.LoginButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -103,16 +105,52 @@
     [self setactivityindicatorView];
 }
 
+- (void)setnonetworkView{
+    if (![AFNetworkReachabilityManager sharedManager].isReachable) {
+        self.backgroundView=[[UIView alloc]init];
+        self.backgroundView.layer.masksToBounds=YES;
+        self.backgroundView.layer.cornerRadius=5;
+        self.backgroundView.backgroundColor=[UIColor colorWithRed:0.05 green:0.10 blue:0.23 alpha:1.00];
+        [self.view addSubview:self.backgroundView];
+        [self.backgroundView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(self.view);
+            make.top.equalTo(self.view).with.offset(20);
+            make.size.mas_equalTo(CGSizeMake(W*0.31, H*0.06));
+        }];
+        
+        UILabel *nonetworkLabel=[[UILabel alloc]init];
+        nonetworkLabel.text=@"网络无法连接";
+        nonetworkLabel.textColor=[UIColor whiteColor];
+        nonetworkLabel.backgroundColor=[UIColor colorWithRed:0.05 green:0.10 blue:0.23 alpha:1.00];
+        nonetworkLabel.layer.masksToBounds=YES;
+        nonetworkLabel.layer.cornerRadius=5;
+        nonetworkLabel.font=[UIFont systemFontOfSize:15];
+        [self.backgroundView addSubview:nonetworkLabel];
+        [nonetworkLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self.backgroundView);
+            make.size.mas_equalTo(CGSizeMake(W*0.25, H*0.06));
+        }];
+        
+        NSTimer *timer=[NSTimer timerWithTimeInterval:2 repeats:NO block:^(NSTimer * _Nonnull timer) {
+            self.backgroundView.hidden=YES;
+        }];
+        [[NSRunLoop mainRunLoop]addTimer:timer forMode:NSRunLoopCommonModes];
+    }
+}
+
+- (void)networkstatus:(NSNotification *)notification{
+    NSDictionary *networkDic=notification.userInfo;
+    NSInteger status=[[networkDic objectForKey:@"AFNetworkingReachabilityNotificationStatusItem"] integerValue];
+    if (status!=AFNetworkReachabilityStatusNotReachable) {
+        self.backgroundView.hidden=YES;
+    }
+}
+
 - (void)change:(NSNotification *)notification{
     NSUserDefaults *userDefaults=[NSUserDefaults standardUserDefaults];
     NSString *ID=[userDefaults objectForKey:@"ID"];
     NSData *headImagedata=[userDefaults objectForKey:@"headimage"];
-    if (self.IDTextField.text.length!=0&&self.PasswordTextField.text.length!=0) {
-        self.LoginButton.alpha=1;
-        self.LoginButton.userInteractionEnabled=YES;
-        self.LoginButton.backgroundColor=[UIColor redColor];
-    }
-    else if ([self.IDTextField.text isEqualToString:ID]){
+    if([self.IDTextField.text isEqualToString:ID]){
         if (headImagedata!=nil) {
             UIImage *headimage=[UIImage imageWithData:headImagedata];
             self.headImage.image=headimage;
@@ -120,8 +158,13 @@
         else
             self.headImage.image=[UIImage imageNamed:@"nomalhead.png"];
     }
-    else if (![self.IDTextField.text isEqualToString:ID]){
+    else{
         self.headImage.image=[UIImage imageNamed:@"nomalhead.png"];
+    }
+    if (self.IDTextField.text.length!=0&&self.PasswordTextField.text.length!=0) {
+        self.LoginButton.alpha=1;
+        self.LoginButton.userInteractionEnabled=YES;
+        self.LoginButton.backgroundColor=[UIColor redColor];
     }
     else{
         self.LoginButton.alpha=0.5;
@@ -166,15 +209,30 @@
              self.PasswordTextField.text=nil;
              [self.PasswordTextField resignFirstResponder];
          } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-             
+             if (![AFNetworkReachabilityManager sharedManager].isReachable) {
+                 NSTimer *timer=[NSTimer timerWithTimeInterval:3 repeats:NO block:^(NSTimer * _Nonnull timer) {
+                     [self.activityindicatorView stopAnimating];
+                     [self setnonetworkView];
+                     self.LoginButton.alpha=1;
+                     self.LoginButton.userInteractionEnabled=YES;
+                     self.LoginButton.backgroundColor=[UIColor redColor];
+                 }];
+                 [[NSRunLoop mainRunLoop]addTimer:timer forMode:NSRunLoopCommonModes];
+             }
          }];
 }
 
 - (void)login:(NSString *)session and:(BOOL)result{
     if (result==YES) {
+        NSUserDefaults *userDefaults=[NSUserDefaults standardUserDefaults];
+        NSString *ID=[userDefaults objectForKey:@"ID"];
+        if (![ID isEqualToString:self.IDTextField.text]) {
+            [userDefaults setObject:self.IDTextField.text forKey:@"ID"];
+            [userDefaults removeObjectForKey:@"headimage"];
+        }
         AppDelegate *Delegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
         Delegate.islogin=YES;
-        NSCharacterSet *charactSet=[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> .~"].invertedSet;
+        NSCharacterSet *charactSet=[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> ~"].invertedSet;
         NSString *sessionstr=[session stringByAddingPercentEncodingWithAllowedCharacters:charactSet];
         Delegate.session=sessionstr;
         [self getdetaidata:sessionstr];
@@ -196,7 +254,7 @@
     self.LoginButton.backgroundColor=[UIColor grayColor];
     [self.activityindicatorView startAnimating];
     NSString *usernamestr=self.IDTextField.text;
-    NSCharacterSet *charactSet=[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> .~"].invertedSet;
+    NSCharacterSet *charactSet=[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> ~"].invertedSet;
     NSString *passwordstr=[self.PasswordTextField.text stringByAddingPercentEncodingWithAllowedCharacters:charactSet];
     AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
     [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/user/login?username=%@&password=%@",usernamestr,passwordstr] parameters:nil progress:nil
@@ -205,7 +263,16 @@
           id value=[responseObject objectForKey:@"Result"];
           [self login:self.sessionstr and:[value boolValue]];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        if (![AFNetworkReachabilityManager sharedManager].isReachable) {
+            NSTimer *timer=[NSTimer timerWithTimeInterval:3 repeats:NO block:^(NSTimer * _Nonnull timer) {
+                [self.activityindicatorView stopAnimating];
+                [self setnonetworkView];
+                self.LoginButton.alpha=1;
+                self.LoginButton.userInteractionEnabled=YES;
+                self.LoginButton.backgroundColor=[UIColor redColor];
+            }];
+            [[NSRunLoop mainRunLoop]addTimer:timer forMode:NSRunLoopCommonModes];
+        }
     }];
 }
 
@@ -220,6 +287,11 @@
             self.headImage.image=headimage;
         }
     }
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(networkstatus:) name:AFNetworkingReachabilityDidChangeNotification object:nil];
+}
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:AFNetworkingReachabilityDidChangeNotification object:nil];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{

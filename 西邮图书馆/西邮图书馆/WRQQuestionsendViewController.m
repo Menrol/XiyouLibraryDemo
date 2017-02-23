@@ -26,7 +26,7 @@
     self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
     [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],NSForegroundColorAttributeName,nil]];
     
-    UIBarButtonItem *ReturnButton=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"return.png"] style:UIBarButtonItemStyleDone target:self action:@selector(return)];
+    UIBarButtonItem *ReturnButton=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"return.png"] style:UIBarButtonItemStylePlain target:self action:@selector(return)];
     self.navigationItem.leftBarButtonItem=ReturnButton;
     
     UIBarButtonItem *SendButton=[[UIBarButtonItem alloc]initWithTitle:@"发送" style:UIBarButtonItemStyleDone target:self action:@selector(send)];
@@ -66,10 +66,18 @@
 
 - (void)send{
     [self.SendquestionTextView resignFirstResponder];
-    UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"发送成功" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
-    [alertController addAction:yesAction];
-    [self presentViewController:alertController animated:YES completion:nil];
+    if (self.SendquestionTextView.text.length!=0) {
+        UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"发送成功" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+        [alertController addAction:yesAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
+    else{
+        UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"发送内容不能为空" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+        [alertController addAction:yesAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated{

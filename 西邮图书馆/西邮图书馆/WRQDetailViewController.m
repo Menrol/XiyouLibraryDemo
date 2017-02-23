@@ -8,7 +8,9 @@
 
 #import "WRQDetailViewController.h"
 #import "AFNetworking.h"
+#import "Masonry.h"
 #import "WRQLinkViewController.h"
+#import "NoNetworkView.h"
 #define W [UIScreen mainScreen].bounds.size.width
 #define H [UIScreen mainScreen].bounds.size.height
 
@@ -23,6 +25,7 @@
 @property(strong,nonatomic)UIImageView *LoadView;
 @property(strong,nonatomic)UIWebView *webView;
 @property(assign,nonatomic)CGFloat webViewheight;
+@property(nonatomic,strong)NoNetworkView *nonetworkView;
 @end
 
 @implementation WRQDetailViewController
@@ -44,7 +47,7 @@
     self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
     [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],NSForegroundColorAttributeName,nil]];
     
-    UIBarButtonItem *ReturnButton=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"return.png"] style:UIBarButtonItemStyleDone target:self action:@selector(return)];
+    UIBarButtonItem *ReturnButton=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"return.png"] style:UIBarButtonItemStylePlain target:self action:@selector(return)];
     self.navigationItem.leftBarButtonItem=ReturnButton;
 
     [self setLoadAnimation];
@@ -69,7 +72,13 @@
              self.titlestr=[[NSString alloc]initWithString:[detailDictionary objectForKey:@"Title"]];
              [self loadhtml];
          } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-             
+             if (![AFNetworkReachabilityManager sharedManager].isReachable) {
+                 NSTimer *timer=[NSTimer timerWithTimeInterval:5 repeats:NO block:^(NSTimer * _Nonnull timer) {
+                     [self.LoadView stopAnimating];
+                     [self setnonetworkview];
+                 }];
+                 [[NSRunLoop mainRunLoop]addTimer:timer forMode:NSRunLoopCommonModes];
+             }
          }];
 }
 
@@ -145,20 +154,46 @@
         return YES;
 }
 
+- (void)setnonetworkview{
+    self.nonetworkView=[[NoNetworkView alloc]init];
+    [self.nonetworkView.reloadButton addTarget:self action:@selector(tryagain) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.nonetworkView];
+    [self.nonetworkView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.view);
+        make.size.mas_equalTo(CGSizeMake(W, H*0.26));
+    }];
+}
+
 - (void)setLoadAnimation{
-    self.LoadView=[[UIImageView alloc]initWithFrame:CGRectMake((W-H*0.8)/2, (H-H*0.6)/2, H*0.8, H*0.6)];
+    self.LoadView=[[UIImageView alloc]init];
     [self.view addSubview:self.LoadView];
+    [self.LoadView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.view);
+        make.size.mas_equalTo(CGSizeMake(W, W*3/4.0));
+    }];
     NSMutableArray *ImageArray=[[NSMutableArray alloc]init];
-    for (int i=1; i<18; i++) {
+    for (int i=1; i<29; i++) {
         [ImageArray addObject:[UIImage imageNamed:[NSString stringWithFormat:@"%d",i]]];
     }
     self.LoadView.animationImages=ImageArray;
-    self.LoadView.animationDuration=2;
+    self.LoadView.animationDuration=1;
     self.LoadView.animationRepeatCount=0;
     [self.LoadView startAnimating];
 }
 
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    self.nonetworkView.hidden=YES;
+}
+
+- (void)tryagain{
+    self.nonetworkView.hidden=YES;
+    [self.LoadView startAnimating];
+    [self getdetaildata];
+}
+
 - (void)return{
+    [self.LoadView stopAnimating];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

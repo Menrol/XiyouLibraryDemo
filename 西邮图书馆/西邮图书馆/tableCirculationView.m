@@ -30,24 +30,29 @@
         self.titleLabel.font=[UIFont boldSystemFontOfSize:23];
         [self addSubview:self.titleLabel];
         
-        UILabel *borrowtitle=[[UILabel alloc]initWithFrame:CGRectMake(0, H*0.07, W*0.2, H*0.02)];
+        UIView *background=[[UIView alloc]initWithFrame:CGRectMake(W*0.05, H*0.07, W*0.9, H*0.04)];
+        background.layer.masksToBounds=YES;
+        background.layer.cornerRadius=10;
+        background.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
+        [self addSubview:background];
+        
+        UILabel *borrowtitle=[[UILabel alloc]initWithFrame:CGRectMake(W*0.15, H*0.08, W*0.2, H*0.02)];
         borrowtitle.text=@"可借图书：";
         borrowtitle.font=[UIFont systemFontOfSize:13];
         [self addSubview:borrowtitle];
         
-        self.borrowLabel=[[UILabel alloc]initWithFrame:CGRectMake(W*0.2, H*0.07, W*0.2, H*0.02)];
+        self.borrowLabel=[[UILabel alloc]initWithFrame:CGRectMake(W*0.35, H*0.08, W*0.2, H*0.02)];
         self.borrowLabel.font=[UIFont systemFontOfSize:13];
         [self addSubview:self.borrowLabel];
         
-        UILabel *totaltitle=[[UILabel alloc]initWithFrame:CGRectMake(W*0.5, H*0.07, W*0.2, H*0.02)];
+        UILabel *totaltitle=[[UILabel alloc]initWithFrame:CGRectMake(W*0.55, H*0.08, W*0.2, H*0.02)];
         totaltitle.text=@"共有图书：";
         totaltitle.font=[UIFont systemFontOfSize:13];
         [self addSubview:totaltitle];
         
-        self.totalLabel=[[UILabel alloc]initWithFrame:CGRectMake(W*0.7, H*0.07, W*0.2, H*0.02)];
+        self.totalLabel=[[UILabel alloc]initWithFrame:CGRectMake(W*0.75, H*0.08, W*0.2, H*0.02)];
         self.totalLabel.font=[UIFont systemFontOfSize:13];
         [self addSubview:self.totalLabel];
-
     }
     return self;
 }

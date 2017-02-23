@@ -9,6 +9,7 @@
 #import "WRQSearchViewController.h"
 #import "AFNetworking.h"
 #import "YYModel.h"
+#import "Masonry.h"
 #import "WRQBookModel.h"
 #import "WRQBookdetailViewController.h"
 #define W [UIScreen mainScreen].bounds.size.width
@@ -19,19 +20,26 @@
 @property(strong,nonatomic)UITableView *searchTableView;
 @property(strong,nonatomic)NSMutableArray *bookModelArray;
 @property(strong,nonatomic)UILabel *notsearchLabel;
+@property(strong,nonnull)UIView *backgroundView;
 @end
 
 @implementation WRQSearchViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    NSTimer *timer=[NSTimer timerWithTimeInterval:1 repeats:NO block:^(NSTimer * _Nonnull timer) {
+        [self setnonetworkView];
+    }];
+    [[NSRunLoop mainRunLoop]addTimer:timer forMode:NSRunLoopCommonModes];
+    
     self.view.backgroundColor=[UIColor whiteColor];
     self.navigationItem.title=@"搜索";
     self.navigationController.navigationBar.barTintColor=[UIColor whiteColor];
     self.navigationController.navigationBar.tintColor=[UIColor colorWithRed:0.74 green:0.78 blue:0.84 alpha:1.00];
     [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor blackColor],NSForegroundColorAttributeName,nil]];
     
-    UIBarButtonItem *ReturnButton=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"return.png"] style:UIBarButtonItemStyleDone target:self action:@selector(return)];
+    UIBarButtonItem *ReturnButton=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"return.png"] style:UIBarButtonItemStylePlain target:self action:@selector(return)];
     self.navigationItem.leftBarButtonItem=ReturnButton;
     
     self.searchbar=[[UISearchBar alloc]initWithFrame:CGRectMake(0, 64, W, H*0.06)];
@@ -46,7 +54,45 @@
     self.searchTableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectZero];
     self.searchTableView.showsVerticalScrollIndicator=NO;
     [self.view addSubview:self.searchTableView];
+    
+    self.bookModelArray=[[NSMutableArray alloc]init];
     // Do any additional setup after loading the view.
+}
+
+- (void)setnonetworkView{
+    if (![AFNetworkReachabilityManager sharedManager].isReachable) {
+        self.backgroundView=[[UIView alloc]init];
+        self.backgroundView.layer.masksToBounds=YES;
+        self.backgroundView.layer.cornerRadius=5;
+        self.backgroundView.backgroundColor=[UIColor colorWithRed:0.05 green:0.10 blue:0.23 alpha:1.00];
+        [self.view addSubview:self.backgroundView];
+        [self.backgroundView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self.view);
+            make.size.mas_equalTo(CGSizeMake(W*0.31, H*0.06));
+        }];
+        
+        UILabel *nonetworkLabel=[[UILabel alloc]init];
+        nonetworkLabel.text=@"网络无法连接";
+        nonetworkLabel.textColor=[UIColor whiteColor];
+        nonetworkLabel.backgroundColor=[UIColor colorWithRed:0.05 green:0.10 blue:0.23 alpha:1.00];
+        nonetworkLabel.layer.masksToBounds=YES;
+        nonetworkLabel.layer.cornerRadius=5;
+        nonetworkLabel.font=[UIFont systemFontOfSize:15];
+        [self.backgroundView addSubview:nonetworkLabel];
+        [nonetworkLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self.backgroundView);
+            make.size.mas_equalTo(CGSizeMake(W*0.25, H*0.06));
+        }];
+    }
+}
+
+- (void)networkstatus:(NSNotification *)notification{
+    NSDictionary *networkDic=notification.userInfo;
+    NSInteger status=[[networkDic objectForKey:@"AFNetworkingReachabilityNotificationStatusItem"] integerValue];
+    [self setnonetworkView];
+    if (status!=AFNetworkReachabilityStatusNotReachable) {
+        self.backgroundView.hidden=YES;
+    }
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -70,7 +116,6 @@
 - (void)getlist:(NSString *)searchstr{
     AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
     [session GET:searchstr parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        self.bookModelArray=[[NSMutableArray alloc]init];
         NSDictionary *Detaildic=[responseObject objectForKey:@"Detail"];
         if ([Detaildic isKindOfClass:[NSDictionary class]]) {
             NSArray *BookDataArray=[Detaildic objectForKey:@"BookData"];
@@ -99,7 +144,7 @@
     WRQBookModel *bookModel=[[WRQBookModel alloc]init];
     bookModel=self.bookModelArray[indexPath.row];
     WRQBookdetailViewController *bookdetailViewController=[[WRQBookdetailViewController alloc]init];
-    bookdetailViewController.ID=bookModel.ID;
+    bookdetailViewController.url=[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/book/detail/id/%@",bookModel.ID];
     self.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:bookdetailViewController animated:YES];
     [self.searchbar resignFirstResponder];
@@ -115,15 +160,17 @@
     cancelBtn.enabled=YES;
     [self.bookModelArray removeAllObjects];
     [self.searchTableView reloadData];
-    NSString *searchstr=[[NSString alloc]initWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/book/search?matchMethod=jq&keyword=%@",searchBar.text];
-    NSCharacterSet *characterset=[[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> .~"]invertedSet];
+    NSString *searchstr=[[NSString alloc]initWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/book/search?keyword=%@",searchBar.text];
+    NSCharacterSet *characterset=[[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> ~"]invertedSet];
     NSString *encodedstr=[searchstr stringByAddingPercentEncodingWithAllowedCharacters:characterset];
     AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
     [session GET:encodedstr parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        self.bookModelArray=[[NSMutableArray alloc]init];
         NSDictionary *Detaildic=[responseObject objectForKey:@"Detail"];
         if ([Detaildic isKindOfClass:[NSDictionary class]]) {
             NSArray *BookDataArray=[Detaildic objectForKey:@"BookData"];
+            if (self.bookModelArray.count!=0) {
+                [self.bookModelArray removeAllObjects];
+            }
             for (NSDictionary *dic in BookDataArray) {
                 WRQBookModel *bookModel=[WRQBookModel yy_modelWithJSON:dic];
                 [self.bookModelArray addObject:bookModel];
@@ -131,6 +178,10 @@
             [self.searchTableView reloadData];
         }
         else{
+            if (self.bookModelArray.count!=0) {
+                [self.bookModelArray removeAllObjects];
+                [self.searchTableView reloadData];
+            }
             self.notsearchLabel=[[UILabel alloc]initWithFrame:CGRectMake(W*0.3, H*0.5, W*0.4, H*0.03)];
             self.notsearchLabel.text=@"未找到相关书籍";
             self.notsearchLabel.font=[UIFont boldSystemFontOfSize:18];
@@ -149,7 +200,7 @@
     }
     else{
         NSString *searchstr=[[NSString alloc]initWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/book/search?keyword=%@",searchText];
-        NSCharacterSet *characterset=[[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> "]invertedSet];
+        NSCharacterSet *characterset=[[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> ~"]invertedSet];
         NSString *encodedstr=[searchstr stringByAddingPercentEncodingWithAllowedCharacters:characterset];
         [self getlist:encodedstr];
     }
@@ -174,11 +225,17 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(networkstatus:) name:AFNetworkingReachabilityDidChangeNotification object:nil];
+}
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:AFNetworkingReachabilityDidChangeNotification object:nil];
 }
 
 - (void)return{
     [self.navigationController popViewControllerAnimated:YES];
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

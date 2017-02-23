@@ -12,6 +12,10 @@
 #import "Masonry.h"
 #import "WRQCollectViewController.h"
 #import "WRQBorrowViewController.h"
+#import "WRQHistoryViewController.h"
+#import "WRQRemindViewController.h"
+#import <AVFoundation/AVCaptureDevice.h>
+#import <AVFoundation/AVMediaFormat.h>
 #define W [UIScreen mainScreen].bounds.size.width
 #define H [UIScreen mainScreen].bounds.size.height
 
@@ -73,11 +77,32 @@
         return H*0.07;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 1;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    UIView *view=[[UIView alloc]initWithFrame:CGRectMake(0, 0, W, 1)];
+    view.backgroundColor=[UIColor clearColor];
+    return view;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 1;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    UIView *view=[[UIView alloc]initWithFrame:CGRectMake(0, 0, W, 1)];
+    view.backgroundColor=[UIColor clearColor];
+    return view;
+}
+
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section==0) {
         WRQMyTableViewCell *cell=[[WRQMyTableViewCell alloc]init];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
-        cell.backgroundView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"mybackground-1"]];
+        cell.backgroundColor=[UIColor colorWithRed:0.30 green:0.67 blue:0.91 alpha:1.00];
+//        cell.backgroundView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"mybackground"]];
         if(self.isLogin==NO){
             cell.loginLabel.hidden=NO;
             cell.loginButton.hidden=NO;
@@ -99,11 +124,11 @@
             cell.headImage.userInteractionEnabled=YES;
             cell.headImage.image=self.headImage;
             cell.nameLabel.text=self.myModel.Name;
-            CGSize size=[self.myModel.Name boundingRectWithSize:CGSizeMake(MAXFLOAT, H*0.03) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:22]} context:nil].size;
+            CGSize size=[self.myModel.Name sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:22]}];
             [cell.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.centerX.equalTo(cell);
                 make.top.equalTo(cell.headImage.mas_bottom).with.offset(H*0.01);
-                make.size.mas_equalTo(CGSizeMake(size.width, H*0.03));
+                make.size.mas_equalTo(CGSizeMake(size.width+1, H*0.03));
             }];
             cell.myView.classLabel.text=self.myModel.Department;
             cell.myView.numberLabel.text=self.myModel.ID;
@@ -152,6 +177,24 @@
                 [self.navigationController pushViewController:borrowViewController animated:YES];
                 self.hidesBottomBarWhenPushed=NO;
             }
+            else if (indexPath.row==1){
+                WRQCollectViewController *collectViewController=[[WRQCollectViewController alloc]init];
+                self.hidesBottomBarWhenPushed=YES;
+                [self.navigationController pushViewController:collectViewController animated:YES];
+                self.hidesBottomBarWhenPushed=NO;
+            }
+            else if (indexPath.row==2){
+                WRQHistoryViewController *histroyViewController=[[WRQHistoryViewController alloc]init];
+                self.hidesBottomBarWhenPushed=YES;
+                [self.navigationController pushViewController:histroyViewController animated:YES];
+                self.hidesBottomBarWhenPushed=NO;
+            }
+            else{
+                WRQRemindViewController *remindViewController=[[WRQRemindViewController alloc]init];
+                self.hidesBottomBarWhenPushed=YES;
+                [self.navigationController pushViewController:remindViewController animated:YES];
+                self.hidesBottomBarWhenPushed=NO;
+            }
         }
     }
 }
@@ -164,21 +207,23 @@
         UIAlertController *alertController=[UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         UIAlertAction *selectAction=[UIAlertAction actionWithTitle:@"从相册中选择照片" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-                // 1.调用系统相册,不可多选照片
                 self.imagePickerController=[[UIImagePickerController alloc]init];
                 self.imagePickerController.sourceType=UIImagePickerControllerSourceTypePhotoLibrary;
                 self.imagePickerController.allowsEditing=NO;
                 self.imagePickerController.delegate=self;
                 [self presentViewController:self.imagePickerController animated:YES completion:nil];
             }
-            else{
-                UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"西邮图书馆没有权限访问您的照片" message:@"请在隐私中允许西邮图书馆访问照片" preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
-                [alertController addAction:yesAction];
-                [self presentViewController:alertController animated:YES completion:nil];
-            }
         }];
         UIAlertAction *cameraAction=[UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            if([[[UIDevice currentDevice]systemVersion]floatValue]>=7.0){
+                AVAuthorizationStatus cameraStatus=[AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+                if (cameraStatus==AVAuthorizationStatusDenied||cameraStatus==AVAuthorizationStatusRestricted) {
+                    UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"此应用没有权限访问您的相机" message:@"您可以在“隐私设置”中启用访问" preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+                    [alertController addAction:yesAction];
+                    [self presentViewController:alertController animated:YES completion:nil];
+                }
+            }
             if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
                 self.imagePickerController=[[UIImagePickerController alloc]init];
                 self.imagePickerController.sourceType=UIImagePickerControllerSourceTypeCamera;
@@ -186,14 +231,7 @@
                 self.imagePickerController.delegate=self;
                 [self presentViewController:self.imagePickerController animated:YES completion:nil];
             }
-            else{
-                UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"西邮图书馆没有权限访问您的相机" message:@"请在隐私中允许西邮图书馆访问相机" preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
-                [alertController addAction:yesAction];
-                [self presentViewController:alertController animated:YES completion:nil];
-            }
         }];
-        
         UIAlertAction *cancelAction=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
         [alertController addAction:selectAction];
         [alertController addAction:cameraAction];
@@ -209,7 +247,12 @@
 }
 
 - (void)imageCropViewControllerDidCancelCrop:(RSKImageCropViewController *)controller{
-    [self.imagePickerController dismissViewControllerAnimated:YES completion:nil];
+    if (self.imagePickerController.sourceType==UIImagePickerControllerSourceTypePhotoLibrary) {
+        [self.imagePickerController dismissViewControllerAnimated:YES completion:nil];
+    }
+    else{
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void)imageCropViewController:(RSKImageCropViewController *)controller didCropImage:(UIImage *)croppedImage usingCropRect:(CGRect)cropRect{
@@ -244,9 +287,7 @@
         if (self.isLogin==YES) {
             self.myModel=Delegate.myModel;
             NSUserDefaults *userDefaults=[NSUserDefaults standardUserDefaults];
-            NSString *ID=[userDefaults objectForKey:@"ID"];
-            if ([self.myModel.ID isEqualToString:ID]) {
-                NSData *headimageData=[userDefaults objectForKey:@"headimage"];
+            NSData *headimageData=[userDefaults objectForKey:@"headimage"];
                 if (headimageData!=nil) {
                     UIImage *headimage=[UIImage imageWithData:headimageData];
                     self.headImage=headimage;
@@ -254,11 +295,6 @@
                 else
                     self.headImage=[UIImage imageNamed:@"nomalhead.png"];
             }
-            else{
-                self.headImage=[UIImage imageNamed:@"nomalhead.png"];
-                [userDefaults removeObjectForKey:@"headimage"];
-            }
-        }
         [self.TableView reloadData];
     }
 }

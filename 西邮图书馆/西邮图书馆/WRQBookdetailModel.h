@@ -11,15 +11,17 @@
 #import "WRQReferbooksModel.h"
 
 @interface WRQBookdetailModel : NSObject
-@property(strong,nonatomic)NSString *Author;
-@property(strong,nonatomic)NSString *Sort;
-@property(strong,nonatomic)NSString *Pub;
-@property(strong,nonatomic)NSString *FavTimes;
-@property(strong,nonatomic)NSString *RentTimes;
-@property(strong,nonatomic)NSString *Image;
-@property(strong,nonatomic)NSString *Title;
-@property(strong,nonatomic)NSString *Subject;
-@property(strong,nonatomic)NSString *Total;
-@property(strong,nonatomic)NSString *Avaliable;
+@property(copy,nonatomic)NSString *ID;
+@property(copy,nonatomic)NSString *Author;
+@property(copy,nonatomic)NSString *Sort;
+@property(copy,nonatomic)NSString *Pub;
+@property(copy,nonatomic)NSString *FavTimes;
+@property(copy,nonatomic)NSString *RentTimes;
+@property(copy,nonatomic)NSString *Image;
+@property(copy,nonatomic)NSString *Title;
+@property(copy,nonatomic)NSString *Subject;
+@property(copy,nonatomic)NSString *Total;
+@property(copy,nonatomic)NSString *Avaliable;
+@property(copy,nonatomic)NSString *Summary;
 @property(strong,nonatomic)NSValue *size;
 @end

@@ -28,7 +28,7 @@
     self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
     [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],NSForegroundColorAttributeName,nil]];
     
-    UIBarButtonItem *ReturnButton=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"return.png"] style:UIBarButtonItemStyleDone target:self action:@selector(return)];
+    UIBarButtonItem *ReturnButton=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"return.png"] style:UIBarButtonItemStylePlain target:self action:@selector(return)];
     self.navigationItem.leftBarButtonItem=ReturnButton;
     
     UIImageView *questionImage=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"question.png"]];

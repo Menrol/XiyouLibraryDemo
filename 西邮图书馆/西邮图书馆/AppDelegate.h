@@ -16,5 +16,6 @@
 @property(assign,nonatomic)BOOL islogin;
 @property(strong,nonatomic)WRQMyModel *myModel;
 @property(copy,nonatomic)NSString *session;
+@property(assign,nonatomic)BOOL canLoadImage;
 @end
 

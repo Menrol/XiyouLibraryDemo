@@ -46,9 +46,6 @@
         AppDelegate *Delegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
         Delegate.islogin=NO;
         self.isLogin=NO;
-        WRQMyModel *myModel=Delegate.myModel;
-        NSUserDefaults *userDefaults=[NSUserDefaults standardUserDefaults];
-        [userDefaults setObject:myModel.ID forKey:@"ID"];
         [self.SetTableView reloadData];
     }];
     UIAlertAction *noaction=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -83,9 +80,11 @@
     if(indexPath.section==0){
         if (indexPath.row>=0&&indexPath.row<=1) {
             cell.selectionStyle=UITableViewCellSelectionStyleNone;
-            UISwitch *messageSwitch=[[UISwitch alloc]initWithFrame:CGRectMake(W*0.85, H*0.01, W*0.15, H*0.03)];
-            messageSwitch.on=YES;
-            [cell.contentView addSubview:messageSwitch];
+            UISwitch *setSwitch=[[UISwitch alloc]initWithFrame:CGRectMake(W*0.85, H*0.01, W*0.15, H*0.03)];
+            setSwitch.on=NO;
+            setSwitch.tag=indexPath.row;
+            [setSwitch addTarget:self action:@selector(isOnchange:) forControlEvents:UIControlEventValueChanged];
+            [cell.contentView addSubview:setSwitch];
         }
         else{
             cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
@@ -100,6 +99,13 @@
         [cell.contentView addSubview:ExitloadLabel];
     }
     return cell;
+}
+
+- (void)isOnchange:(UISwitch *)setSwitch{
+    if (setSwitch.tag==1) {
+        AppDelegate *Delegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
+        Delegate.canLoadImage=setSwitch.isOn;
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

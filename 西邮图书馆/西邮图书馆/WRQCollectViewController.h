@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WRQCollectViewController : UIViewController
+@interface WRQCollectViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>
 
 @end

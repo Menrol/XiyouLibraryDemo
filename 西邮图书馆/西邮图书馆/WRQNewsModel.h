@@ -12,6 +12,5 @@
 @property(copy,nonatomic)NSString *Date;
 @property(copy,nonatomic)NSString *ID;
 @property(copy,nonatomic)NSString *Title;
-@property(copy,nonatomic)NSString *finaltitle;
 @property(strong,nonatomic)NSValue *size;
 @end

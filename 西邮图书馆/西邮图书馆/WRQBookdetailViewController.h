@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface WRQBookdetailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>
-@property(strong,nonatomic)NSString *ID;
+@property(strong,nonatomic)NSString *url;
 @end

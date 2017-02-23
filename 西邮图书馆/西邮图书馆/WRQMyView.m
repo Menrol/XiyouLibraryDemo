@@ -68,7 +68,7 @@
             make.size.mas_equalTo(CGSizeMake(W*0.2, H*0.03));
         }];
     }
-    self.backgroundColor=[UIColor colorWithRed:0.39 green:0.73 blue:0.94 alpha:0.5];
+    self.backgroundColor=[UIColor colorWithRed:0.24 green:0.55 blue:0.76 alpha:1.00];
     return self;
 }
 @end

@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "WRQTabViewController.h"
+#import "AFNetworking.h"
 
 @interface AppDelegate ()
 
@@ -18,10 +19,19 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        
+    }];
     self.window=[[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
     WRQTabViewController *TabViewController=[[WRQTabViewController alloc]init];
     self.window.rootViewController=TabViewController;
     [self.window makeKeyAndVisible];
+    
+    self.canLoadImage=NO;
+    
+    [NSThread sleepForTimeInterval:3];
     return YES;
 }
 

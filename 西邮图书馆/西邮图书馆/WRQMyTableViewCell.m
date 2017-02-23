@@ -26,6 +26,8 @@
         self.headImage.layer.cornerRadius=H*0.065;
         self.headImage.backgroundColor=[UIColor whiteColor];
         self.headImage.contentMode=UIViewContentModeScaleToFill;
+        self.headImage.layer.borderWidth=3;
+        self.headImage.layer.borderColor=[UIColor whiteColor].CGColor;
         [self.contentView addSubview:self.headImage];
         [self.headImage mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(self);

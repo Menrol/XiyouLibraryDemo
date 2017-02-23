@@ -9,13 +9,18 @@
 /* Begin PBXBuildFile section */
 		18025E131E4DFB6B0069BBC0 /* WRQCollectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18025E121E4DFB6B0069BBC0 /* WRQCollectViewController.m */; };
 		18025E161E4DFD410069BBC0 /* WRQBorrowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18025E151E4DFD410069BBC0 /* WRQBorrowViewController.m */; };
-		18117B9F1E23A66700205470 /* WRQBorrowbookTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18117B9E1E23A66700205470 /* WRQBorrowbookTableViewCell.m */; };
+		182377191E5742A80049C5F3 /* WRQMainTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 182377181E5742A80049C5F3 /* WRQMainTableViewCell.m */; };
+		182A067F1E5057EE00E49A25 /* WRQBorrowModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 182A067E1E5057EE00E49A25 /* WRQBorrowModel.m */; };
 		182C18F81E361E0F008DA309 /* WRQNewsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 182C18F71E361E0F008DA309 /* WRQNewsModel.m */; };
 		183026751E364EA5003A7142 /* WRQDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183026741E364EA5003A7142 /* WRQDetailViewController.m */; };
 		1838754B1E38BA1900E009FF /* WRQMyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1838754A1E38BA1900E009FF /* WRQMyTableViewCell.m */; };
 		183A020D1E263E0900338CC9 /* WRQNoticeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 183A020C1E263E0900338CC9 /* WRQNoticeModel.m */; };
 		1840C9381E2CCAFC0049A92F /* WRQBookdetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1840C9371E2CCAFC0049A92F /* WRQBookdetailViewController.m */; };
 		184241F61E2A5A9700711740 /* WRQSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 184241F51E2A5A9700711740 /* WRQSearchViewController.m */; };
+		1846804A1E58801D00974F19 /* WRQRemindTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 184680491E58801D00974F19 /* WRQRemindTableViewCell.m */; };
+		185322841E5C5A120057F55F /* NoNetworkView.m in Sources */ = {isa = PBXBuildFile; fileRef = 185322831E5C5A120057F55F /* NoNetworkView.m */; };
+		187648A11E53095400B42292 /* WRQCollectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 187648A01E53095400B42292 /* WRQCollectTableViewCell.m */; };
+		187648A41E53350100B42292 /* WRQCollectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 187648A31E53350100B42292 /* WRQCollectModel.m */; };
 		187B730C1E2E66FE00C88E27 /* WRQBooKbasicTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 187B730B1E2E66FE00C88E27 /* WRQBooKbasicTableViewCell.m */; };
 		1893AB0F1E32140000B39341 /* WRQCirculationTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893AB0E1E32140000B39341 /* WRQCirculationTableViewCell.m */; };
 		1893AB121E3238CA00B39341 /* WRQReferTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1893AB111E3238CA00B39341 /* WRQReferTableViewCell.m */; };
@@ -31,9 +36,14 @@
 		18BBA7B91E2E30D7006B8A66 /* tableSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BBA7B81E2E30D7006B8A66 /* tableSectionView.m */; };
 		18BBA7BC1E2E3DEC006B8A66 /* tableCirculationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BBA7BB1E2E3DEC006B8A66 /* tableCirculationView.m */; };
 		18C0B8E71E485AFC0096791B /* WRQQuestionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C0B8E61E485AFC0096791B /* WRQQuestionTableViewCell.m */; };
+		18C87DB11E55A2640038679E /* WRQHistoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C87DB01E55A2640038679E /* WRQHistoryModel.m */; };
+		18C87DB71E55B04A0038679E /* WRQHistoryTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C87DB61E55B04A0038679E /* WRQHistoryTableViewCell.m */; };
+		18C87DBA1E55CC8A0038679E /* WRQRemindViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C87DB91E55CC8A0038679E /* WRQRemindViewController.m */; };
+		18CDC9111E5AEFC700948EAF /* WRQLineLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CDC9101E5AEFC700948EAF /* WRQLineLayout.m */; };
 		18DECE401E4B4FD300924E79 /* WRQMyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DECE3F1E4B4FD300924E79 /* WRQMyView.m */; };
 		18DF15261E37611A0025D0A7 /* WRQLinkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DF15251E37611A0025D0A7 /* WRQLinkViewController.m */; };
 		18DF6E3D1E2B892200980376 /* WRQBookModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DF6E3C1E2B892200980376 /* WRQBookModel.m */; };
+		18EEB6BC1E54948700A9A250 /* WRQHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EEB6BB1E54948700A9A250 /* WRQHistoryViewController.m */; };
 		18F30DF41E3CCE3700F59B3B /* WRQMyModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F30DF31E3CCE3700F59B3B /* WRQMyModel.m */; };
 		74A61C1E1DD9EA040081E48D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 74A61C1D1DD9EA040081E48D /* main.m */; };
 		74A61C211DD9EA040081E48D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 74A61C201DD9EA040081E48D /* AppDelegate.m */; };
@@ -63,8 +73,10 @@
 		18025E121E4DFB6B0069BBC0 /* WRQCollectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WRQCollectViewController.m; path = "西邮图书馆/WRQCollectViewController.m"; sourceTree = "<group>"; };
 		18025E141E4DFD410069BBC0 /* WRQBorrowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WRQBorrowViewController.h; path = "西邮图书馆/WRQBorrowViewController.h"; sourceTree = "<group>"; };
 		18025E151E4DFD410069BBC0 /* WRQBorrowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WRQBorrowViewController.m; path = "西邮图书馆/WRQBorrowViewController.m"; sourceTree = "<group>"; };
-		18117B9D1E23A66700205470 /* WRQBorrowbookTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQBorrowbookTableViewCell.h; sourceTree = "<group>"; };
-		18117B9E1E23A66700205470 /* WRQBorrowbookTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQBorrowbookTableViewCell.m; sourceTree = "<group>"; };
+		182377171E5742A80049C5F3 /* WRQMainTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQMainTableViewCell.h; sourceTree = "<group>"; };
+		182377181E5742A80049C5F3 /* WRQMainTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQMainTableViewCell.m; sourceTree = "<group>"; };
+		182A067D1E5057EE00E49A25 /* WRQBorrowModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQBorrowModel.h; sourceTree = "<group>"; };
+		182A067E1E5057EE00E49A25 /* WRQBorrowModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQBorrowModel.m; sourceTree = "<group>"; };
 		182C18F61E361E0F008DA309 /* WRQNewsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQNewsModel.h; sourceTree = "<group>"; };
 		182C18F71E361E0F008DA309 /* WRQNewsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQNewsModel.m; sourceTree = "<group>"; };
 		183026731E364EA5003A7142 /* WRQDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQDetailViewController.h; sourceTree = "<group>"; };
@@ -77,6 +89,14 @@
 		1840C9371E2CCAFC0049A92F /* WRQBookdetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WRQBookdetailViewController.m; path = "西邮图书馆/WRQBookdetailViewController.m"; sourceTree = "<group>"; };
 		184241F41E2A5A9700711740 /* WRQSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WRQSearchViewController.h; path = "西邮图书馆/WRQSearchViewController.h"; sourceTree = "<group>"; };
 		184241F51E2A5A9700711740 /* WRQSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WRQSearchViewController.m; path = "西邮图书馆/WRQSearchViewController.m"; sourceTree = "<group>"; };
+		184680481E58801D00974F19 /* WRQRemindTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQRemindTableViewCell.h; sourceTree = "<group>"; };
+		184680491E58801D00974F19 /* WRQRemindTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQRemindTableViewCell.m; sourceTree = "<group>"; };
+		185322821E5C5A120057F55F /* NoNetworkView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoNetworkView.h; sourceTree = "<group>"; };
+		185322831E5C5A120057F55F /* NoNetworkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoNetworkView.m; sourceTree = "<group>"; };
+		1876489F1E53095400B42292 /* WRQCollectTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQCollectTableViewCell.h; sourceTree = "<group>"; };
+		187648A01E53095400B42292 /* WRQCollectTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQCollectTableViewCell.m; sourceTree = "<group>"; };
+		187648A21E53350100B42292 /* WRQCollectModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQCollectModel.h; sourceTree = "<group>"; };
+		187648A31E53350100B42292 /* WRQCollectModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQCollectModel.m; sourceTree = "<group>"; };
 		187B730A1E2E66FE00C88E27 /* WRQBooKbasicTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQBooKbasicTableViewCell.h; sourceTree = "<group>"; };
 		187B730B1E2E66FE00C88E27 /* WRQBooKbasicTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQBooKbasicTableViewCell.m; sourceTree = "<group>"; };
 		1893AB0D1E32140000B39341 /* WRQCirculationTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQCirculationTableViewCell.h; sourceTree = "<group>"; };
@@ -107,6 +127,14 @@
 		18BBA7BB1E2E3DEC006B8A66 /* tableCirculationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tableCirculationView.m; sourceTree = "<group>"; };
 		18C0B8E51E485AFC0096791B /* WRQQuestionTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQQuestionTableViewCell.h; sourceTree = "<group>"; };
 		18C0B8E61E485AFC0096791B /* WRQQuestionTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQQuestionTableViewCell.m; sourceTree = "<group>"; };
+		18C87DAF1E55A2640038679E /* WRQHistoryModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQHistoryModel.h; sourceTree = "<group>"; };
+		18C87DB01E55A2640038679E /* WRQHistoryModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQHistoryModel.m; sourceTree = "<group>"; };
+		18C87DB51E55B04A0038679E /* WRQHistoryTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQHistoryTableViewCell.h; sourceTree = "<group>"; };
+		18C87DB61E55B04A0038679E /* WRQHistoryTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQHistoryTableViewCell.m; sourceTree = "<group>"; };
+		18C87DB81E55CC8A0038679E /* WRQRemindViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WRQRemindViewController.h; path = "西邮图书馆/WRQRemindViewController.h"; sourceTree = "<group>"; };
+		18C87DB91E55CC8A0038679E /* WRQRemindViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WRQRemindViewController.m; path = "西邮图书馆/WRQRemindViewController.m"; sourceTree = "<group>"; };
+		18CDC90F1E5AEFC700948EAF /* WRQLineLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQLineLayout.h; sourceTree = "<group>"; };
+		18CDC9101E5AEFC700948EAF /* WRQLineLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQLineLayout.m; sourceTree = "<group>"; };
 		18DECE3E1E4B4FD300924E79 /* WRQMyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQMyView.h; sourceTree = "<group>"; };
 		18DECE3F1E4B4FD300924E79 /* WRQMyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQMyView.m; sourceTree = "<group>"; };
 		18DF15241E37611A0025D0A7 /* WRQLinkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQLinkViewController.h; sourceTree = "<group>"; };
@@ -115,6 +143,8 @@
 		18DF6E3C1E2B892200980376 /* WRQBookModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQBookModel.m; sourceTree = "<group>"; };
 		18E05ACF1E3E3865008C159C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		18E05AD01E3E3865008C159C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		18EEB6BA1E54948700A9A250 /* WRQHistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WRQHistoryViewController.h; path = "西邮图书馆/WRQHistoryViewController.h"; sourceTree = "<group>"; };
+		18EEB6BB1E54948700A9A250 /* WRQHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WRQHistoryViewController.m; path = "西邮图书馆/WRQHistoryViewController.m"; sourceTree = "<group>"; };
 		18F30DF21E3CCE3700F59B3B /* WRQMyModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WRQMyModel.h; sourceTree = "<group>"; };
 		18F30DF31E3CCE3700F59B3B /* WRQMyModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WRQMyModel.m; sourceTree = "<group>"; };
 		6914B033766C505178D03234 /* Pods-西邮图书馆.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-西邮图书馆.debug.xcconfig"; path = "Pods/Target Support Files/Pods-西邮图书馆/Pods-西邮图书馆.debug.xcconfig"; sourceTree = "<group>"; };
@@ -168,20 +198,24 @@
 		18117B9C1E23A60F00205470 /* UITableViewCell */ = {
 			isa = PBXGroup;
 			children = (
+				182377171E5742A80049C5F3 /* WRQMainTableViewCell.h */,
+				182377181E5742A80049C5F3 /* WRQMainTableViewCell.m */,
 				187B730A1E2E66FE00C88E27 /* WRQBooKbasicTableViewCell.h */,
 				187B730B1E2E66FE00C88E27 /* WRQBooKbasicTableViewCell.m */,
-				18117B9D1E23A66700205470 /* WRQBorrowbookTableViewCell.h */,
-				18117B9E1E23A66700205470 /* WRQBorrowbookTableViewCell.m */,
+				1876489F1E53095400B42292 /* WRQCollectTableViewCell.h */,
+				187648A01E53095400B42292 /* WRQCollectTableViewCell.m */,
 				1893AB0D1E32140000B39341 /* WRQCirculationTableViewCell.h */,
 				1893AB0E1E32140000B39341 /* WRQCirculationTableViewCell.m */,
 				1893AB101E3238CA00B39341 /* WRQReferTableViewCell.h */,
 				1893AB111E3238CA00B39341 /* WRQReferTableViewCell.m */,
 				183875491E38BA1900E009FF /* WRQMyTableViewCell.h */,
 				1838754A1E38BA1900E009FF /* WRQMyTableViewCell.m */,
-				18DECE3E1E4B4FD300924E79 /* WRQMyView.h */,
-				18DECE3F1E4B4FD300924E79 /* WRQMyView.m */,
 				18C0B8E51E485AFC0096791B /* WRQQuestionTableViewCell.h */,
 				18C0B8E61E485AFC0096791B /* WRQQuestionTableViewCell.m */,
+				18C87DB51E55B04A0038679E /* WRQHistoryTableViewCell.h */,
+				18C87DB61E55B04A0038679E /* WRQHistoryTableViewCell.m */,
+				184680481E58801D00974F19 /* WRQRemindTableViewCell.h */,
+				184680491E58801D00974F19 /* WRQRemindTableViewCell.m */,
 			);
 			name = UITableViewCell;
 			sourceTree = "<group>";
@@ -240,10 +274,14 @@
 			children = (
 				74A61C441DD9EBCA0081E48D /* WRQMyViewController.h */,
 				74A61C451DD9EBCA0081E48D /* WRQMyViewController.m */,
+				18EEB6BA1E54948700A9A250 /* WRQHistoryViewController.h */,
+				18EEB6BB1E54948700A9A250 /* WRQHistoryViewController.m */,
 				18025E111E4DFB6B0069BBC0 /* WRQCollectViewController.h */,
 				18025E121E4DFB6B0069BBC0 /* WRQCollectViewController.m */,
 				18025E141E4DFD410069BBC0 /* WRQBorrowViewController.h */,
 				18025E151E4DFD410069BBC0 /* WRQBorrowViewController.m */,
+				18C87DB81E55CC8A0038679E /* WRQRemindViewController.h */,
+				18C87DB91E55CC8A0038679E /* WRQRemindViewController.m */,
 			);
 			name = My;
 			path = ..;
@@ -252,6 +290,8 @@
 		183A020A1E263D0300338CC9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				187648A21E53350100B42292 /* WRQCollectModel.h */,
+				187648A31E53350100B42292 /* WRQCollectModel.m */,
 				183A020B1E263E0900338CC9 /* WRQNoticeModel.h */,
 				183A020C1E263E0900338CC9 /* WRQNoticeModel.m */,
 				182C18F61E361E0F008DA309 /* WRQNewsModel.h */,
@@ -266,11 +306,15 @@
 				1893AB1A1E324A5F00B39341 /* WRQReferbooksModel.m */,
 				18F30DF21E3CCE3700F59B3B /* WRQMyModel.h */,
 				18F30DF31E3CCE3700F59B3B /* WRQMyModel.m */,
+				182A067D1E5057EE00E49A25 /* WRQBorrowModel.h */,
+				182A067E1E5057EE00E49A25 /* WRQBorrowModel.m */,
+				18C87DAF1E55A2640038679E /* WRQHistoryModel.h */,
+				18C87DB01E55A2640038679E /* WRQHistoryModel.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
 		};
-		18BBA7B31E2E305F006B8A66 /* BookdetailView */ = {
+		18BBA7B31E2E305F006B8A66 /* SomeView */ = {
 			isa = PBXGroup;
 			children = (
 				18BBA7B41E2E30BC006B8A66 /* tableHeaderView.h */,
@@ -279,8 +323,21 @@
 				18BBA7B81E2E30D7006B8A66 /* tableSectionView.m */,
 				18BBA7BA1E2E3DEC006B8A66 /* tableCirculationView.h */,
 				18BBA7BB1E2E3DEC006B8A66 /* tableCirculationView.m */,
+				18DECE3E1E4B4FD300924E79 /* WRQMyView.h */,
+				18DECE3F1E4B4FD300924E79 /* WRQMyView.m */,
+				185322821E5C5A120057F55F /* NoNetworkView.h */,
+				185322831E5C5A120057F55F /* NoNetworkView.m */,
 			);
-			name = BookdetailView;
+			name = SomeView;
+			sourceTree = "<group>";
+		};
+		18CDC90B1E5AEAD500948EAF /* UICollectionViewLayout */ = {
+			isa = PBXGroup;
+			children = (
+				18CDC90F1E5AEFC700948EAF /* WRQLineLayout.h */,
+				18CDC9101E5AEFC700948EAF /* WRQLineLayout.m */,
+			);
+			name = UICollectionViewLayout;
 			sourceTree = "<group>";
 		};
 		5797E63AC010F23B3289F995 /* Pods */ = {
@@ -324,7 +381,8 @@
 				182C18F91E3643AD008DA309 /* Set */,
 				182C18FD1E364635008DA309 /* My */,
 				182C18FA1E364420008DA309 /* login */,
-				18BBA7B31E2E305F006B8A66 /* BookdetailView */,
+				18CDC90B1E5AEAD500948EAF /* UICollectionViewLayout */,
+				18BBA7B31E2E305F006B8A66 /* SomeView */,
 				18117B9C1E23A60F00205470 /* UITableViewCell */,
 				183A020A1E263D0300338CC9 /* Model */,
 				74A61C251DD9EA040081E48D /* Main.storyboard */,
@@ -516,7 +574,9 @@
 				74A61C211DD9EA040081E48D /* AppDelegate.m in Sources */,
 				18B93B7F1E2130660061C26B /* WRQAboutusViewController.m in Sources */,
 				18DF6E3D1E2B892200980376 /* WRQBookModel.m in Sources */,
+				187648A11E53095400B42292 /* WRQCollectTableViewCell.m in Sources */,
 				18DF15261E37611A0025D0A7 /* WRQLinkViewController.m in Sources */,
+				187648A41E53350100B42292 /* WRQCollectModel.m in Sources */,
 				18C0B8E71E485AFC0096791B /* WRQQuestionTableViewCell.m in Sources */,
 				74A61C1E1DD9EA040081E48D /* main.m in Sources */,
 				183026751E364EA5003A7142 /* WRQDetailViewController.m in Sources */,
@@ -525,25 +585,33 @@
 				18F30DF41E3CCE3700F59B3B /* WRQMyModel.m in Sources */,
 				18B93B731E20E87A0061C26B /* WRQLoginViewController.m in Sources */,
 				18B93B821E213B4B0061C26B /* WRQQuestionViewController.m in Sources */,
+				18EEB6BC1E54948700A9A250 /* WRQHistoryViewController.m in Sources */,
+				185322841E5C5A120057F55F /* NoNetworkView.m in Sources */,
 				18BBA7B91E2E30D7006B8A66 /* tableSectionView.m in Sources */,
 				1893AB181E324A1B00B39341 /* WRQCirculationModel.m in Sources */,
 				18DECE401E4B4FD300924E79 /* WRQMyView.m in Sources */,
 				18B93B761E20E95A0061C26B /* WRQTabViewController.m in Sources */,
+				18C87DB11E55A2640038679E /* WRQHistoryModel.m in Sources */,
 				1893AB151E3246A900B39341 /* WRQBookdetailModel.m in Sources */,
 				18B93B851E213B630061C26B /* WRQQuestionsendViewController.m in Sources */,
 				184241F61E2A5A9700711740 /* WRQSearchViewController.m in Sources */,
 				187B730C1E2E66FE00C88E27 /* WRQBooKbasicTableViewCell.m in Sources */,
 				18025E131E4DFB6B0069BBC0 /* WRQCollectViewController.m in Sources */,
+				1846804A1E58801D00974F19 /* WRQRemindTableViewCell.m in Sources */,
 				183A020D1E263E0900338CC9 /* WRQNoticeModel.m in Sources */,
 				1838754B1E38BA1900E009FF /* WRQMyTableViewCell.m in Sources */,
-				18117B9F1E23A66700205470 /* WRQBorrowbookTableViewCell.m in Sources */,
+				182A067F1E5057EE00E49A25 /* WRQBorrowModel.m in Sources */,
+				18C87DBA1E55CC8A0038679E /* WRQRemindViewController.m in Sources */,
 				74A61C431DD9EBAE0081E48D /* WRQMainViewController.m in Sources */,
 				18BBA7BC1E2E3DEC006B8A66 /* tableCirculationView.m in Sources */,
 				1893AB0F1E32140000B39341 /* WRQCirculationTableViewCell.m in Sources */,
 				74A61C461DD9EBCA0081E48D /* WRQMyViewController.m in Sources */,
 				1840C9381E2CCAFC0049A92F /* WRQBookdetailViewController.m in Sources */,
+				18C87DB71E55B04A0038679E /* WRQHistoryTableViewCell.m in Sources */,
 				18025E161E4DFD410069BBC0 /* WRQBorrowViewController.m in Sources */,
 				182C18F81E361E0F008DA309 /* WRQNewsModel.m in Sources */,
+				182377191E5742A80049C5F3 /* WRQMainTableViewCell.m in Sources */,
+				18CDC9111E5AEFC700948EAF /* WRQLineLayout.m in Sources */,
 				18BBA7B61E2E30BC006B8A66 /* tableHeaderView.m in Sources */,
 				1893AB121E3238CA00B39341 /* WRQReferTableViewCell.m in Sources */,
 			);
@@ -688,6 +756,7 @@
 			baseConfigurationReference = 6914B033766C505178D03234 /* Pods-西邮图书馆.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				DEVELOPMENT_TEAM = 69ZWLY9ZXM;
 				INFOPLIST_FILE = "西邮图书馆/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
@@ -702,6 +771,7 @@
 			baseConfigurationReference = 0D594843E18F97104381F278 /* Pods-西邮图书馆.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				DEVELOPMENT_TEAM = 69ZWLY9ZXM;
 				INFOPLIST_FILE = "西邮图书馆/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;

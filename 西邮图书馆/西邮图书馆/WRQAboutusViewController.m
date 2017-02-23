@@ -30,28 +30,33 @@
     self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
     [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],NSForegroundColorAttributeName,nil]];
     
-    UIBarButtonItem *ReturnButton=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"return.png"] style:UIBarButtonItemStyleDone target:self action:@selector(return)];
+    UIBarButtonItem *ReturnButton=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"return.png"] style:UIBarButtonItemStylePlain target:self action:@selector(return)];
     self.navigationItem.leftBarButtonItem=ReturnButton;
     
-    UIImageView *LogoImageView=[[UIImageView alloc]initWithFrame:CGRectMake((W-H*0.13)/2.0, H*0.15, H*0.11, H*0.11)];
+    UIView *backgroundView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, W, H*0.26+64)];
+    backgroundView.backgroundColor=[UIColor clearColor];
+    
+    UIImageView *LogoImageView=[[UIImageView alloc]initWithFrame:CGRectMake((W-H*0.13)/2.0, 64+H*0.02, H*0.11, H*0.11)];
     LogoImageView.layer.masksToBounds=YES;
     LogoImageView.layer.cornerRadius=15;
     LogoImageView.image=[UIImage imageNamed:@"book.png"];
-    [self.view addSubview:LogoImageView];
+    [backgroundView addSubview:LogoImageView];
     
-    UILabel *IntroduceLabel=[[UILabel alloc]initWithFrame:CGRectMake(W*0.3, H*0.18+W*0.2, W*0.8, H*0.06)];
+    UILabel *IntroduceLabel=[[UILabel alloc]initWithFrame:CGRectMake(W*0.3, 64+H*0.14, W*0.8, H*0.06)];
     IntroduceLabel.text=@"西邮图书馆   V1.0.0";
     IntroduceLabel.textColor=[UIColor blackColor];
-    [self.view addSubview:IntroduceLabel];
+    [backgroundView addSubview:IntroduceLabel];
     
-    self.tableView=[[UITableView alloc]init];
+    self.tableView=[[UITableView alloc]initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     self.tableView.delegate=self;
     self.tableView.dataSource=self;
     self.tableView.scrollEnabled=NO;
     self.tableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectZero];
+    self.tableView.tableHeaderView=backgroundView;
+    self.automaticallyAdjustsScrollViewInsets=NO;
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(IntroduceLabel.mas_bottom).with.offset(H*0.02);
+        make.top.equalTo(self.view).with.offset(0);
         make.left.equalTo(self.view).with.offset(0);
         make.size.mas_equalTo([UIScreen mainScreen].bounds.size);
     }];
@@ -113,6 +118,7 @@
     [super viewWillAppear:animated];
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:NO];
 }
+
 - (void)return{
     [self.navigationController popViewControllerAnimated:YES];
 }

@@ -22,6 +22,7 @@
 #import "UIImageView+WebCache.h"
 #import "AppDelegate.h"
 #import "WRQLoginViewController.h"
+#import "NoNetworkView.h"
 #define W [UIScreen mainScreen].bounds.size.width
 #define H [UIScreen mainScreen].bounds.size.height
 
@@ -32,7 +33,9 @@
 @property(strong,nonatomic)NSMutableArray *bookdetailModelArray;
 @property(strong,nonatomic)NSMutableArray *circulationModelArray;
 @property(strong,nonatomic)NSMutableArray *referbooksModelArray;
-@property(nonatomic,strong)UIImageView *LoadView;
+@property(strong,nonatomic)UIImageView *LoadView;
+@property(strong,nonatomic)UIActivityIndicatorView *activityindicatorView;
+@property(nonatomic,strong)NoNetworkView *nonetworkView;
 @end
 
 @implementation WRQBookdetailViewController
@@ -90,6 +93,8 @@
     [self.view bringSubviewToFront:self.upBtn];
     
     [self setLoadAnimation];
+    
+    [self setactivityindicatorView];
     // Do any additional setup after loading the view.
 }
 
@@ -130,7 +135,7 @@
     }
     else if (indexPath.section==2){
         WRQCirculationModel *circulationModel=self.circulationModelArray[indexPath.row];
-        if (circulationModel.Date==nil) {
+        if (circulationModel.Date.length==0) {
             return H*0.14;
         }
         else
@@ -296,7 +301,7 @@
 
 - (void)getdetaildata{
     AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
-    [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/book/detail/id/%@",self.ID] parameters:nil progress:nil
+    [session GET:self.url parameters:nil progress:nil
     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         self.bookdetailModelArray=[[NSMutableArray alloc]init];
         self.circulationModelArray=[[NSMutableArray alloc]init];
@@ -312,10 +317,13 @@
             NSDictionary *Imagedic=[Doubandic objectForKey:@"Images"];
             bookdetailModel.Image=[Imagedic objectForKey:@"large"];
             tableHeaderView *headerView=[[tableHeaderView alloc]initWithFrame:CGRectMake(0, 0, W, H*0.29)];
-            headerView.nopictureImage.hidden=YES;
             NSURL *imageurl=[NSURL URLWithString:bookdetailModel.Image];
             self.tableview.tableHeaderView=headerView;
-            [headerView.bookImageView sd_setImageWithURL:imageurl];
+            AppDelegate *Delegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
+            if ([AFNetworkReachabilityManager sharedManager].isReachableViaWiFi||([AFNetworkReachabilityManager sharedManager].isReachableViaWWAN&&Delegate.canLoadImage)) {
+                headerView.nopictureImage.hidden=YES;
+                [headerView.bookImageView sd_setImageWithURL:imageurl];
+            }
         }
         CGSize size=[bookdetailModel.Title boundingRectWithSize:CGSizeMake(W*0.9, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:20]} context:nil].size;
         NSValue *value=[NSValue valueWithCGSize:size];
@@ -340,21 +348,58 @@
         self.tableview.hidden=NO;
     }
     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        if (![AFNetworkReachabilityManager sharedManager].isReachable) {
+            NSTimer *timer=[NSTimer timerWithTimeInterval:5 repeats:NO block:^(NSTimer * _Nonnull timer) {
+                [self.LoadView stopAnimating];
+                [self setnonetworkview];
+            }];
+            [[NSRunLoop mainRunLoop]addTimer:timer forMode:NSRunLoopCommonModes];
+        }
+    }];
+}
+
+- (void)tryagain{
+    self.nonetworkView.hidden=YES;
+    [self.LoadView startAnimating];
+    [self getdetaildata];
+}
+
+- (void)setnonetworkview{
+    self.nonetworkView=[[NoNetworkView alloc]init];
+    [self.nonetworkView.reloadButton addTarget:self action:@selector(tryagain) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.nonetworkView];
+    [self.nonetworkView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.view);
+        make.size.mas_equalTo(CGSizeMake(W, H*0.26));
     }];
 }
 
 - (void)setLoadAnimation{
-    self.LoadView=[[UIImageView alloc]initWithFrame:CGRectMake((W-H*0.8)/2, (H-H*0.6)/2, H*0.8, H*0.6)];
+    self.LoadView=[[UIImageView alloc]init];
     [self.view addSubview:self.LoadView];
+    [self.LoadView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.view);
+        make.size.mas_equalTo(CGSizeMake(W, W*3/4.0));
+    }];
     NSMutableArray *ImageArray=[[NSMutableArray alloc]init];
-    for (int i=1; i<18; i++) {
+    for (int i=1; i<17; i++) {
         [ImageArray addObject:[UIImage imageNamed:[NSString stringWithFormat:@"%d",i]]];
     }
     self.LoadView.animationImages=ImageArray;
-    self.LoadView.animationDuration=2;
+    self.LoadView.animationDuration=1;
     self.LoadView.animationRepeatCount=0;
     [self.LoadView startAnimating];
+}
+
+- (void)setactivityindicatorView{
+    self.activityindicatorView=[[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    self.activityindicatorView.hidesWhenStopped=YES;
+    self.activityindicatorView.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    [self.view addSubview:self.activityindicatorView];
+    [self.activityindicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.view);
+        make.size.mas_equalTo(CGSizeMake(H*0.1, H*0.1));
+    }];
 }
 
 - (void)pressup{
@@ -366,11 +411,13 @@
 - (void)presscollect{
     AppDelegate *Delegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
     if (Delegate.islogin==YES) {
+        WRQBookdetailModel *bookdetailModel=self.bookdetailModelArray[0];
         AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
-        [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/user/addFav?session=%@",Delegate.session] parameters:nil progress:nil
+        [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/user/addFav?session=%@&id=%@",Delegate.session,bookdetailModel.ID] parameters:nil progress:nil
         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSLog(@"%@",responseObject);
             NSString *result=[responseObject objectForKey:@"Detail"];
+            [self.activityindicatorView stopAnimating];
+            self.returnBtn.userInteractionEnabled=YES;
             if ([result isEqualToString:@"ADDED_SUCCEED"]) {
                 UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"收藏成功" message:nil preferredStyle:UIAlertControllerStyleAlert];
                 UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
@@ -391,8 +438,16 @@
             }
         }
         failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            
+            if(![AFNetworkReachabilityManager sharedManager].isReachable){
+                [self.activityindicatorView stopAnimating];
+                UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"网络无法连接" message:nil preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+                [alertController addAction:yesAction];
+                [self presentViewController:alertController animated:YES completion:nil];
+            }
         }];
+        [self.activityindicatorView startAnimating];
+        self.returnBtn.userInteractionEnabled=NO;
     }
     else{
         WRQLoginViewController *loginViewController=[[WRQLoginViewController alloc]init];
@@ -401,10 +456,12 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
 - (void)pressreturn{
+    [self.LoadView stopAnimating];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

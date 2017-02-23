@@ -57,6 +57,7 @@
     self.automaticallyAdjustsScrollViewInsets=NO;
     self.tableView.delegate=self;
     self.tableView.dataSource=self;
+    self.tableView.allowsSelection=NO;
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.view).with.offset(0);
@@ -194,6 +195,7 @@
     self.navigationItem.leftBarButtonItem=self.deleteButton;
     self.navigationItem.rightBarButtonItem=self.finishButton;
     self.tableView.editing=YES;
+    self.tableView.allowsSelection=YES;
 }
 
 - (void)pressfinish{
@@ -201,6 +203,7 @@
     self.navigationItem.leftBarButtonItem=self.returnButton;
     self.navigationItem.rightBarButtonItem=self.editButton;
     self.tableView.editing=NO;
+    self.tableView.allowsSelection=NO;
 }
 
 - (void)pressdelete{
@@ -234,6 +237,7 @@
     self.navigationItem.leftBarButtonItem=self.returnButton;
     self.navigationItem.rightBarButtonItem=self.editButton;
     self.tableView.editing=NO;
+    self.tableView.allowsSelection=NO;
 }
 
 - (void)isHaveCollection{

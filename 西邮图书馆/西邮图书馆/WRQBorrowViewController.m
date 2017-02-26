@@ -174,7 +174,7 @@
             [bookImageView sd_setImageWithURL:[NSURL URLWithString:detailModel.Image]];
         }
         else{
-            nopictureImageView.hidden=YES;
+            nopictureImageView.hidden=NO;
         }
     }
     else{

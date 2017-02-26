@@ -131,7 +131,7 @@
             [cell.BookImageView sd_setImageWithURL:[NSURL URLWithString:collectModel.Image]];
         }
         else{
-            cell.nopictureImage.hidden=YES;
+            cell.nopictureImage.hidden=NO;
         }
     }
     else{

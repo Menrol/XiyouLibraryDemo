@@ -11,4 +11,6 @@
 @interface WRQMyView : UIView
 @property(strong,nonatomic)UILabel *classLabel;
 @property(strong,nonatomic)UILabel *numberLabel;
+@property(strong,nonatomic)UIImageView *classImageView;
+@property(strong,nonatomic)UIImageView *numberImageView;
 @end

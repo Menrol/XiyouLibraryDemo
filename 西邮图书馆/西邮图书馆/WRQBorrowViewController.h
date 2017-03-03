@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WRQBorrowViewController : UIViewController<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource>
+@interface WRQBorrowViewController : UIViewController<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource,UIScrollViewDelegate>
 
 @end

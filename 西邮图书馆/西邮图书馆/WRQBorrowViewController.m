@@ -32,6 +32,8 @@
 @property(strong,nonatomic)UILabel *summaryLabel;
 @property(strong,nonatomic)UIImageView *LoadView;
 @property(strong,nonatomic)NoNetworkView *nonetworkView;
+@property(assign,nonatomic)NSInteger count;
+@property(strong,nonatomic)NSIndexPath *nowindexpath;
 @end
 
 @implementation WRQBorrowViewController
@@ -83,11 +85,11 @@
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.collectionView.mas_bottom).with.offset(0);
         make.centerX.equalTo(self.view);
-        make.size.mas_equalTo(CGSizeMake(W*0.8, H*0.03));
+        make.size.mas_equalTo(CGSizeMake(W*0.8, 1));
     }];
     
     self.summaryLabel=[[UILabel alloc]init];
-    self.summaryLabel.font=[UIFont systemFontOfSize:15];
+    self.summaryLabel.font=[UIFont systemFontOfSize:13];
     self.summaryLabel.numberOfLines=0;
     self.summaryLabel.textAlignment=NSTextAlignmentCenter;
     self.summaryLabel.textColor=[UIColor grayColor];
@@ -96,8 +98,7 @@
     [self.summaryLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.titleLabel.mas_bottom).with.offset(H*0.02);
         make.left.equalTo(self.view).with.offset(W*0.05);
-        make.bottom.equalTo(self.view).with.offset(-H*0.03);
-        make.width.mas_equalTo(W*0.9);
+        make.size.mas_equalTo(CGSizeMake(W*0.9, 1));
     }];
     
     self.bookModelArray=[[NSMutableArray alloc]init];
@@ -106,40 +107,9 @@
     
     [self setLoadAnimation];
     
-    // Do any additional setup after loading the view.
-}
+    [self setactivityindicatorView];
 
-- (void)networkstatus:(NSNotification *)notification{
-    NSDictionary *networkDic=notification.userInfo;
-    NSInteger status=[[networkDic objectForKey:@"AFNetworkingReachabilityNotificationStatusItem"] integerValue];
-    if (status==AFNetworkReachabilityStatusNotReachable) {
-        UIView *backgroundView=[[UIView alloc]init];
-        backgroundView.layer.masksToBounds=YES;
-        backgroundView.layer.cornerRadius=5;
-        backgroundView.backgroundColor=[UIColor colorWithRed:0.05 green:0.10 blue:0.23 alpha:1.00];
-        [self.view addSubview:backgroundView];
-        [backgroundView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.center.equalTo(self.view);
-            make.size.mas_equalTo(CGSizeMake(W*0.31, H*0.06));
-        }];
-        
-        UILabel *nonetworkLabel=[[UILabel alloc]init];
-        nonetworkLabel.text=@"网络无法连接";
-        nonetworkLabel.textColor=[UIColor whiteColor];
-        nonetworkLabel.backgroundColor=[UIColor colorWithRed:0.05 green:0.10 blue:0.23 alpha:1.00];
-        nonetworkLabel.layer.masksToBounds=YES;
-        nonetworkLabel.layer.cornerRadius=5;
-        nonetworkLabel.font=[UIFont systemFontOfSize:15];
-        [backgroundView addSubview:nonetworkLabel];
-        [nonetworkLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.center.equalTo(backgroundView);
-            make.size.mas_equalTo(CGSizeMake(W*0.25, H*0.06));
-        }];
-        NSTimer *timer=[NSTimer timerWithTimeInterval:2 repeats:NO block:^(NSTimer * _Nonnull timer) {
-            backgroundView.hidden=YES;
-        }];
-        [[NSRunLoop mainRunLoop]addTimer:timer forMode:NSRunLoopCommonModes];
-    }
+    // Do any additional setup after loading the view.
 }
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
@@ -165,8 +135,7 @@
         make.center.equalTo(cell);
         make.size.mas_equalTo(CGSizeMake(H*0.1, H*0.1));
     }];
-    WRQBookdetailModel *detailModel=self.detailModelArray[indexPath.row];
-    CGSize size=[detailModel.size CGSizeValue];
+    WRQBookdetailModel *detailModel=self.detailModelArray[indexPath.item];
     if (detailModel.Image.length!=0) {
         AppDelegate *Delegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
         if ([AFNetworkReachabilityManager sharedManager].isReachableViaWiFi||([AFNetworkReachabilityManager sharedManager].isReachableViaWWAN&&Delegate.canLoadImage)) {
@@ -175,25 +144,53 @@
         }
         else{
             nopictureImageView.hidden=NO;
+            bookImageView.image=nil;
         }
     }
     else{
         nopictureImageView.hidden=NO;
+        bookImageView.image=nil;
     }
-    self.titleLabel.text=detailModel.Title;
-    [self.titleLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.collectionView.mas_bottom).with.offset(0);
-        make.centerX.equalTo(self.view);
-        make.size.mas_equalTo(CGSizeMake(W*0.8, size.height));
-    }];
-    self.summaryLabel.text=detailModel.Summary;
     return cell;
 }
 
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
+    if (velocity.x>0&&self.nowindexpath.item+2>self.detailModelArray.count&&self.count<self.bookModelArray.count) {
+        WRQBorrowModel *borrowModel=self.bookModelArray[self.count];
+        [self getdetaildata:borrowModel.Barcode];
+        [self.activityindicatorView startAnimating];
+        self.collectionView.scrollEnabled=NO;
+        self.collectionView.userInteractionEnabled=NO;
+    }
+}
+
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    CGPoint point=[self.view convertPoint:self.collectionView.center toView:self.collectionView];
+    self.nowindexpath=[self.collectionView indexPathForItemAtPoint:point];
+    if (self.nowindexpath.item<self.bookModelArray.count) {
+        WRQBookdetailModel *detailModel=self.detailModelArray[self.nowindexpath.item];
+        CGSize titlesize=[detailModel.size CGSizeValue];
+        self.titleLabel.text=detailModel.Title;
+        [self.titleLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.collectionView.mas_bottom).with.offset(0);
+            make.centerX.equalTo(self.view);
+            make.size.mas_equalTo(CGSizeMake(W*0.8, titlesize.height+1));
+        }];
+        self.summaryLabel.text=detailModel.Summary;
+        CGSize summarysize=[detailModel.Summary boundingRectWithSize:CGSizeMake(W*0.9, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13]} context:nil].size;
+        [self.summaryLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.titleLabel.mas_bottom).with.offset(H*0.01);
+            make.left.equalTo(self.view).with.offset(W*0.05);
+            make.size.mas_equalTo(CGSizeMake(W*0.9, summarysize.height+1));
+        }];
+    }
+}
+
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    WRQBookdetailModel *bookdetailModel=self.detailModelArray[indexPath.row];
+    WRQBookdetailModel *bookdetailModel=self.detailModelArray[indexPath.item];
     WRQBookdetailViewController *bookdetailViewController=[[WRQBookdetailViewController alloc]init];
     bookdetailViewController.url=[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/book/detail/id/%@",bookdetailModel.ID];
+    self.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:bookdetailViewController animated:YES];
 }
 
@@ -201,7 +198,6 @@
     AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
     [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/book/detail/barcode/%@",barcode] parameters:nil progress:nil
     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"%@",responseObject);
         NSDictionary *Detaildic=[responseObject objectForKey:@"Detail"];
         WRQBookdetailModel *bookdetailModel=[WRQBookdetailModel yy_modelWithDictionary:Detaildic];
         NSDictionary *Doubandic=[Detaildic objectForKey:@"DoubanInfo"];
@@ -216,6 +212,11 @@
         NSValue *value=[NSValue valueWithCGSize:size];
         bookdetailModel.size=value;
         [self.detailModelArray addObject:bookdetailModel];
+        self.count++;
+        [self.activityindicatorView stopAnimating];
+        self.collectionView.scrollEnabled=YES;
+        self.collectionView.userInteractionEnabled=YES;
+        [self.collectionView reloadData];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (![AFNetworkReachabilityManager sharedManager].isReachable) {
             NSTimer *timer=[NSTimer timerWithTimeInterval:5 repeats:NO block:^(NSTimer * _Nonnull timer) {
@@ -227,12 +228,57 @@
     }];
 }
 
+- (void)getfirstdetail:(NSString *)barcode{
+    AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
+    [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/book/detail/barcode/%@",barcode] parameters:nil progress:nil
+         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+             NSDictionary *Detaildic=[responseObject objectForKey:@"Detail"];
+             WRQBookdetailModel *bookdetailModel=[WRQBookdetailModel yy_modelWithDictionary:Detaildic];
+             NSDictionary *Doubandic=[Detaildic objectForKey:@"DoubanInfo"];
+             if ([Doubandic isEqual:[NSNull null]]) {
+                 bookdetailModel.Image=nil;
+             }
+             else{
+                 NSDictionary *Imagedic=[Doubandic objectForKey:@"Images"];
+                 bookdetailModel.Image=[Imagedic objectForKey:@"large"];
+             }
+             CGSize size=[bookdetailModel.Title boundingRectWithSize:CGSizeMake(W*0.8, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:18]} context:nil].size;
+             NSValue *value=[NSValue valueWithCGSize:size];
+             bookdetailModel.size=value;
+             [self.detailModelArray addObject:bookdetailModel];
+             self.count++;
+             [self.LoadView stopAnimating];
+             [self.collectionView reloadData];
+             self.titleLabel.text=bookdetailModel.Title;
+             [self.titleLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+                 make.top.equalTo(self.collectionView.mas_bottom).with.offset(0);
+                 make.centerX.equalTo(self.view);
+                 make.size.mas_equalTo(CGSizeMake(W*0.8, size.height+1));
+             }];
+             self.summaryLabel.text=bookdetailModel.Summary;
+             CGSize summarysize=[bookdetailModel.Summary boundingRectWithSize:CGSizeMake(W*0.9, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13]} context:nil].size;
+             [self.summaryLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+                 make.top.equalTo(self.titleLabel.mas_bottom).with.offset(H*0.01);
+                 make.left.equalTo(self.view).with.offset(W*0.05);
+                 make.size.mas_equalTo(CGSizeMake(W*0.9, summarysize.height+1));
+             }];
+             self.nowindexpath=[NSIndexPath indexPathForItem:0 inSection:0];
+         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+             if (![AFNetworkReachabilityManager sharedManager].isReachable) {
+                 NSTimer *timer=[NSTimer timerWithTimeInterval:5 repeats:NO block:^(NSTimer * _Nonnull timer) {
+                     [self.LoadView stopAnimating];
+                     [self setnonetworkview];
+                 }];
+                 [[NSRunLoop mainRunLoop]addTimer:timer forMode:NSRunLoopCommonModes];
+             }
+         }];
+}
+
 - (void)getID{
     AppDelegate *Delegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
     AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
     [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/user/rent?session=%@",Delegate.session] parameters:nil progress:nil
     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"%@",responseObject);
         id Detail=[responseObject objectForKey:@"Detail"];
         if([Detail isKindOfClass:[NSString class]]){
             [self.LoadView stopAnimating];
@@ -240,13 +286,14 @@
             self.collectionView.hidden=YES;
         }
         else{
-            for (NSDictionary *dic in (NSArray *)Detail) {
+            NSArray *detailArray=(NSArray *)Detail;
+            for (NSDictionary *dic in detailArray) {
                 WRQBorrowModel *borrowModel=[WRQBorrowModel yy_modelWithDictionary:dic];
                 [self.bookModelArray addObject:borrowModel];
-                [self getdetaildata:borrowModel.Barcode];
             }
-            [self.collectionView reloadData];
-            [self.LoadView stopAnimating];
+            self.count=0;
+            WRQBorrowModel *borrowModel=self.bookModelArray[self.count];
+            [self getfirstdetail:borrowModel.Barcode];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (![AFNetworkReachabilityManager sharedManager].isReachable) {
@@ -256,6 +303,17 @@
             }];
             [[NSRunLoop mainRunLoop]addTimer:timer forMode:NSRunLoopCommonModes];
         }
+    }];
+}
+
+- (void)setactivityindicatorView{
+    self.activityindicatorView=[[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    self.activityindicatorView.hidesWhenStopped=YES;
+    self.activityindicatorView.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    [self.view addSubview:self.activityindicatorView];
+    [self.activityindicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.view);
+        make.size.mas_equalTo(CGSizeMake(H*0.1, H*0.1));
     }];
 }
 
@@ -295,43 +353,6 @@
         make.size.mas_equalTo(CGSizeMake(size.width+1, H*0.03));
     }];
 }
-
-//- (void)updatedata{
-//    AppDelegate *Delegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
-//    AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
-//    [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/user/rent?session=%@",Delegate.session] parameters:nil progress:nil
-//    success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//        NSArray *detailArray=[responseObject objectForKey:@"Detail"];
-//        [self.bookModelArray removeAllObjects];
-//        for (NSDictionary *dic in detailArray) {
-//            WRQBorrowModel *borrowModel=[WRQBorrowModel yy_modelWithDictionary:dic];
-//            [self.bookModelArray addObject:borrowModel];
-//        }
-//        [self.collectionView reloadData];
-//        [self.activityindicatorView stopAnimating];
-//        [self presentViewController:self.alertController animated:YES completion:nil];
-//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-//        
-//    }];
-//}
-
-//- (void)pressrenew:(UIButton *)btn{
-//    [self.activityindicatorView startAnimating];
-//    WRQBorrowModel *borrowModel=self.bookModelArray[btn.tag];
-//    AppDelegate *Delegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
-//    AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
-//    [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/user/renew?session=%@&barcode=%@&department_id=%@&library_id=%@",Delegate.session,borrowModel.Barcode,borrowModel.Department_id,borrowModel.Library_id] parameters:nil progress:nil
-//    success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//        NSLog(@"%@",responseObject);
-//        NSString *datestr=[responseObject objectForKey:@"Detail"];
-//        self.alertController=[UIAlertController alertControllerWithTitle:@"续借成功" message:[NSString stringWithFormat:@"新的还书日期为%@",datestr] preferredStyle:UIAlertControllerStyleAlert];
-//        UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
-//        [self.alertController addAction:yesAction];
-//        [self updatedata];
-//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-//        
-//    }];
-//}
 
 - (void)setLoadAnimation{
     self.LoadView=[[UIImageView alloc]init];

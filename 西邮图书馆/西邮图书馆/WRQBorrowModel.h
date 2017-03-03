@@ -15,6 +15,6 @@
 @property(copy,nonatomic)NSString *Department_id;
 @property(copy,nonatomic)NSString *Library_id;
 @property(copy,nonatomic)NSString *State;
-@property(copy,nonatomic)NSString *CanRenew;
+@property(assign,nonatomic)BOOL CanRenew;
 @property(strong,nonatomic)NSValue *size;
 @end

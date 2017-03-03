@@ -25,7 +25,6 @@
 @property(strong,nonatomic)NSMutableArray *bookModelArray;
 @property(strong,nonatomic)UIImageView *titleImageView;
 @property(strong,nonatomic)NoNetworkView *nonetworkView;
-@property(copy,nonatomic)NSString *newdateStr;
 @end
 
 @implementation WRQRemindViewController
@@ -48,7 +47,6 @@
     self.tableView.delegate=self;
     self.tableView.dataSource=self;
     self.automaticallyAdjustsScrollViewInsets=NO;
-    self.tableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.tableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectZero];
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -73,12 +71,6 @@
              id Detail=[responseObject objectForKey:@"Detail"];
              if([Detail isKindOfClass:[NSString class]]){
                  [self.LoadView stopAnimating];
-//                 WRQBorrowModel *borrowModel=[[WRQBorrowModel alloc]init];
-//                 borrowModel.Title=@"text";
-//                 borrowModel.Barcode=@"text";
-//                 borrowModel.Date=@"2016-2-3";
-//                 [self.bookModelArray addObject:borrowModel];
-//                 [self.tableView reloadData];
                  [self setnobookView];
              }
              else{
@@ -87,17 +79,15 @@
                      CGSize size=[borrowModel.Title boundingRectWithSize:CGSizeMake(W*0.6, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:15]} context:nil].size;
                      NSValue *value=[NSValue valueWithCGSize:size];
                      borrowModel.size=value;
-                     NSDateFormatter *dateFormatter=[[NSDateFormatter alloc]init];
-                     dateFormatter.dateFormat=@"yyyy-MM-dd";
                      NSDate *nowDate=[NSDate date];
-                     NSString *nowDatestr=[dateFormatter stringFromDate:nowDate];
-                     nowDate=[dateFormatter dateFromString:nowDatestr];
-                     NSDate *lastDate=[dateFormatter dateFromString:borrowModel.Date];
-                     NSCalendar *calendar=[NSCalendar currentCalendar];
-                     NSCalendarUnit unit=NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay;
-                     NSDateComponents *dateCom=[calendar components:unit fromDate:nowDate toDate:lastDate options:0];
-                     if([borrowModel.CanRenew isEqualToString:@"true"]&&dateCom.year==0&&dateCom.month==0&&dateCom.day<=7){
-                        [self.bookModelArray addObject:borrowModel];
+                     NSDateFormatter *dateformatter=[[NSDateFormatter alloc]init];
+                     dateformatter.dateFormat=@"yyyyMMdd";
+                     NSString *nowDatestr=[dateformatter stringFromDate:nowDate];
+                     nowDate=[dateformatter dateFromString:nowDatestr];
+                     NSDate *expiringDate=[dateformatter dateFromString:borrowModel.Date];
+                     NSInteger day=([expiringDate timeIntervalSince1970]-[nowDate timeIntervalSince1970])/(24*60*60);
+                     if(borrowModel.CanRenew&&day<=7){
+                         [self.bookModelArray addObject:borrowModel];
                      }
                  }
                  [self.LoadView stopAnimating];
@@ -122,7 +112,7 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     WRQBorrowModel *borrowModel=self.bookModelArray[indexPath.row];
     CGSize size=[borrowModel.size CGSizeValue];
-    return H*0.15+size.height;
+    return H*0.12+size.height;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -142,17 +132,15 @@
     WRQBorrowModel *borrowModel=self.bookModelArray[indexPath.row];
     CGSize size=[borrowModel.size CGSizeValue];
     cell.titleLabel.text=borrowModel.Title;
+    [cell.titleLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(cell).with.offset(H*0.02);
+        make.left.equalTo(cell).with.offset(W*0.15);
+        make.size.mas_equalTo(CGSizeMake(W*0.6, size.height+1));
+    }];
     cell.dateLabel.text=borrowModel.Date;
     cell.barcodeLabel.text=borrowModel.Barcode;
     cell.renewButton.tag=indexPath.row;
     [cell.renewButton addTarget:self action:@selector(pressrenew:) forControlEvents:UIControlEventTouchUpInside];
-    UIImageView *background=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"alertbackground.png"]];
-    cell.backgroundView=background;
-    [background mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(cell);
-        make.left.equalTo(cell).with.offset(W*0.05);
-        make.size.mas_equalTo(CGSizeMake(W*0.9, H*0.15+size.height));
-    }];
     return cell;
 }
 
@@ -163,25 +151,22 @@
     [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/user/renew?session=%@&barcode=%@&department_id=%@&library_id=%@",Delegate.session,borrowModel.Barcode,borrowModel.Department_id,borrowModel.Library_id] parameters:nil progress:nil
          success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
              NSLog(@"%@",responseObject);
-             self.newdateStr=[responseObject objectForKey:@"Detail"];
+             NSString *newdateStr=[responseObject objectForKey:@"Detail"];
+             UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"续借成功" message:[NSString stringWithFormat:@"新的到期时间为%@",newdateStr] preferredStyle:UIAlertControllerStyleAlert];
+             UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+             [alertController addAction:yesAction];
+             [self presentViewController:alertController animated:YES completion:nil];
+             [self.bookModelArray removeObjectAtIndex:btn.tag];
+             NSIndexPath *indexpath=[NSIndexPath indexPathForRow:btn.tag inSection:0];
+             [self.tableView deleteRowsAtIndexPaths:@[indexpath] withRowAnimation:UITableViewRowAnimationFade];
          } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-             
+             if (![AFNetworkReachabilityManager sharedManager].isReachable) {
+                 UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"续借失败" message:@"请检查网络状态" preferredStyle:UIAlertControllerStyleAlert];
+                 UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+                 [alertController addAction:yesAction];
+                 [self presentViewController:alertController animated:YES completion:nil];
+             }
          }];
-    if (![AFNetworkReachabilityManager sharedManager].isReachable) {
-        UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"续借失败" message:@"请检查网络状态" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
-        [alertController addAction:yesAction];
-        [self presentViewController:alertController animated:YES completion:nil];
-    }
-    else{
-        UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"续借成功" message:[NSString stringWithFormat:@"新的到期时间为%@",self.newdateStr] preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *yesAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
-        [alertController addAction:yesAction];
-        [self presentViewController:alertController animated:YES completion:nil];
-        [self.bookModelArray removeObjectAtIndex:btn.tag];
-        NSIndexPath *indexpath=[NSIndexPath indexPathForRow:btn.tag inSection:0];
-        [self.tableView deleteRowsAtIndexPaths:@[indexpath] withRowAnimation:UITableViewRowAnimationFade];
-    }
 }
 
 - (void)setnonetworkview{

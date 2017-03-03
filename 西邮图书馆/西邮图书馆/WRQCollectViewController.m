@@ -132,10 +132,12 @@
         }
         else{
             cell.nopictureImage.hidden=NO;
+            cell.BookImageView.image=nil;
         }
     }
     else{
         cell.nopictureImage.hidden=NO;
+        cell.BookImageView.image=nil;
     }
     cell.BooknameLabel.text=collectModel.Title;
     cell.authorLabel.text=collectModel.Author;

@@ -38,7 +38,7 @@
         self.loginLabel=[[UILabel alloc]init];
         self.loginLabel.text=@"请登录";
         self.loginLabel.font=[UIFont systemFontOfSize:20];
-        self.loginLabel.textColor=[UIColor redColor];
+        self.loginLabel.textColor=[UIColor whiteColor];
         [self.contentView addSubview:self.loginLabel];
         [self.loginLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.headImage.mas_bottom).with.offset(H*0.02);

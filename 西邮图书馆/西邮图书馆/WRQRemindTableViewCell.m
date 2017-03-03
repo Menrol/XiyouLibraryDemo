@@ -27,6 +27,14 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     self=[super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        UIImageView *iconImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"alert-2.png"]];
+        [self.contentView addSubview:iconImageView];
+        [iconImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerY.equalTo(self);
+            make.left.equalTo(self).with.offset(W*0.02);
+            make.size.mas_equalTo(CGSizeMake(H*0.06, H*0.06));
+        }];
+        
         self.titleLabel=[[UILabel alloc]init];
         self.titleLabel.numberOfLines=0;
         self.titleLabel.font=[UIFont boldSystemFontOfSize:15];
@@ -34,7 +42,7 @@
         [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self).with.offset(H*0.02);
             make.left.equalTo(self).with.offset(W*0.15);
-            make.size.mas_equalTo(CGSizeMake(W*0.45, H*0.03));
+            make.size.mas_equalTo(CGSizeMake(W*0.6, 1));
         }];
         
         UILabel *barcodetitleLabel=[[UILabel alloc]init];
@@ -77,16 +85,16 @@
         
         self.renewButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
         [self.renewButton setTitle:@"续借" forState:UIControlStateNormal];
-        [self.renewButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        self.renewButton.backgroundColor=[UIColor redColor];
-        self.renewButton.titleLabel.font=[UIFont boldSystemFontOfSize:18];
-        self.renewButton.layer.masksToBounds=YES;
-        self.renewButton.layer.cornerRadius=10;
+        [self.renewButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        self.renewButton.backgroundColor=[UIColor whiteColor];
+        self.renewButton.titleLabel.font=[UIFont boldSystemFontOfSize:13];
+        self.renewButton.layer.borderWidth=1;
+        self.renewButton.layer.borderColor=[UIColor redColor].CGColor;
         [self.contentView addSubview:self.renewButton];
         [self.renewButton mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(self);
-            make.left.equalTo(self.titleLabel.mas_right).with.offset(W*0.1);
-            make.size.mas_equalTo(CGSizeMake(W*0.2, H*0.06));
+            make.left.equalTo(self.titleLabel.mas_right).with.offset(W*0.02);
+            make.size.mas_equalTo(CGSizeMake(W*0.13, H*0.04));
         }];
     }
     return self;

@@ -44,11 +44,7 @@
     [super viewDidLoad];
     [self getdetaildata];
     
-    self.view.backgroundColor=[UIColor whiteColor];
-    self.navigationItem.title=@"书籍详情";
-    self.navigationController.navigationBar.barTintColor=[UIColor whiteColor];
-    self.navigationController.navigationBar.tintColor=[UIColor colorWithRed:0.74 green:0.78 blue:0.84 alpha:1.00];
-    [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor blackColor],NSForegroundColorAttributeName,nil]];
+    self.view.backgroundColor=[UIColor whiteColor]; 
     
     self.returnBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     [self.returnBtn setImage:[UIImage imageNamed:@"return-1.png"] forState:UIControlStateNormal];

@@ -22,8 +22,7 @@
 
 - (void)prepareLayout{
     self.scrollDirection=UICollectionViewScrollDirectionHorizontal;
-    CGFloat insert=(self.collectionView.frame.size.width-H*0.26)*0.5;
-    self.sectionInset=UIEdgeInsetsMake(0, insert, 0, insert);
+    self.sectionInset=UIEdgeInsetsMake(0, W*0.35, 0, W*0.35);
     self.itemSize=CGSizeMake(W*0.35, H*0.28);
 }
 
@@ -32,7 +31,7 @@
 }
 
 -(NSArray<UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect{
-    NSArray *array=[super layoutAttributesForElementsInRect:rect];
+    NSArray *array=[[NSArray alloc]initWithArray:[super layoutAttributesForElementsInRect:rect]copyItems:YES];
     CGFloat centerX=self.collectionView.contentOffset.x+self.collectionView.frame.size.width*0.5;
     for (UICollectionViewLayoutAttributes *attributes in array) {
         CGFloat distance=ABS(attributes.center.x-centerX);
@@ -47,7 +46,7 @@
     rect.origin.y=0;
     rect.origin.x=proposedContentOffset.x;
     rect.size=self.collectionView.frame.size;
-    NSArray *array=[super layoutAttributesForElementsInRect:rect];
+    NSArray *array=[[NSArray alloc]initWithArray:[super layoutAttributesForElementsInRect:rect]copyItems:YES];
     CGFloat centerX=proposedContentOffset.x+self.collectionView.frame.size.width*0.5;
     CGFloat mindistance=MAXFLOAT;
     for (UICollectionViewLayoutAttributes *attributes in array) {

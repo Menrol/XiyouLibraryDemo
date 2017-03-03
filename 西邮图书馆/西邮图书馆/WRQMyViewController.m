@@ -124,13 +124,19 @@
             cell.headImage.userInteractionEnabled=YES;
             cell.headImage.image=self.headImage;
             cell.nameLabel.text=self.myModel.Name;
-            CGSize size=[self.myModel.Name sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:22]}];
+            CGSize namesize=[self.myModel.Name sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:22]}];
             [cell.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.centerX.equalTo(cell);
                 make.top.equalTo(cell.headImage.mas_bottom).with.offset(H*0.01);
-                make.size.mas_equalTo(CGSizeMake(size.width+1, H*0.03));
+                make.size.mas_equalTo(CGSizeMake(namesize.width+1, H*0.03));
             }];
             cell.myView.classLabel.text=self.myModel.Department;
+            CGSize classsize=[self.myModel.Department sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]}];
+            [cell.myView.classLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.top.equalTo(cell.myView.classImageView.mas_bottom).with.offset(0);
+                make.centerX.equalTo(cell.myView.classImageView);
+                make.size.mas_equalTo(CGSizeMake(classsize.width+1, H*0.03));
+            }];
             cell.myView.numberLabel.text=self.myModel.ID;
         }
         return cell;

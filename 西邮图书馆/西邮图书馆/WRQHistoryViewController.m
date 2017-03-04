@@ -171,7 +171,7 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     WRQHistoryModel *historyModel=self.historyModelArray[indexPath.row];
     CGSize size=[historyModel.size CGSizeValue];
-    return H*0.19+size.height;
+    return H*0.19+size.height+1;
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -202,12 +202,12 @@
     [cell.titleLabel mas_updateConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(cell).with.offset(H*0.1);
         make.left.equalTo(cell.circleView.mas_right).with.offset(H*0.02);
-        make.size.mas_equalTo(CGSizeMake(W*0.63, size.height));
+        make.size.mas_equalTo(CGSizeMake(W*0.63, size.height+1));
     }];
     [cell.linedownView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(cell.circleView.mas_bottom);
         make.left.equalTo(cell.dateLabel.mas_right).with.offset(W*0.01);
-        make.size.mas_equalTo(CGSizeMake(W*0.005, H*0.08+size.height));
+        make.size.mas_equalTo(CGSizeMake(W*0.005, H*0.08+size.height+1));
     }];
 //    UIButton *background=[UIButton buttonWithType:UIButtonTypeRoundedRect];
 //    background.layer.masksToBounds=YES;

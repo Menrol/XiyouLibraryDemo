@@ -213,7 +213,7 @@
         [cell.titleLabel mas_updateConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(cell).with.offset(0);
             make.left.equalTo(cell).with.offset(W*0.1);
-            make.size.mas_equalTo(CGSizeMake(W*0.8, size.height));
+            make.size.mas_equalTo(CGSizeMake(W*0.8, size.height+1));
         }];
         UIButton *btn=[UIButton buttonWithType:UIButtonTypeRoundedRect];
         btn.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];

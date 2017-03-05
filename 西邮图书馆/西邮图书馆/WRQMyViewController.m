@@ -102,7 +102,6 @@
         WRQMyTableViewCell *cell=[[WRQMyTableViewCell alloc]init];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
         cell.backgroundColor=[UIColor colorWithRed:0.30 green:0.67 blue:0.91 alpha:1.00];
-//        cell.backgroundView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"mybackground"]];
         if(self.isLogin==NO){
             cell.loginLabel.hidden=NO;
             cell.loginButton.hidden=NO;

@@ -80,7 +80,6 @@
     self.titleLabel.font=[UIFont boldSystemFontOfSize:18];
     self.titleLabel.numberOfLines=0;
     self.titleLabel.textAlignment=NSTextAlignmentCenter;
-//    self.titleLabel.backgroundColor=[UIColor grayColor];
     [self.view addSubview:self.titleLabel];
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.collectionView.mas_bottom).with.offset(0);
@@ -93,7 +92,6 @@
     self.summaryLabel.numberOfLines=0;
     self.summaryLabel.textAlignment=NSTextAlignmentCenter;
     self.summaryLabel.textColor=[UIColor grayColor];
-//    self.summaryLabel.backgroundColor=[UIColor grayColor];
     [self.view addSubview:self.summaryLabel];
     [self.summaryLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.titleLabel.mas_bottom).with.offset(H*0.02);

@@ -67,7 +67,6 @@
     AFHTTPSessionManager *session=[AFHTTPSessionManager manager];
     [session GET:[NSString stringWithFormat:@"http://api.xiyoumobile.com/xiyoulibv2/user/rent?session=%@",Delegate.session] parameters:nil progress:nil
          success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-             NSLog(@"%@",responseObject);
              id Detail=[responseObject objectForKey:@"Detail"];
              if([Detail isKindOfClass:[NSString class]]){
                  [self.LoadView stopAnimating];

@@ -209,16 +209,6 @@
         make.left.equalTo(cell.dateLabel.mas_right).with.offset(W*0.01);
         make.size.mas_equalTo(CGSizeMake(W*0.005, H*0.08+size.height+1));
     }];
-//    UIButton *background=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    background.layer.masksToBounds=YES;
-//    background.layer.cornerRadius=10;
-//    background.backgroundColor=color;
-//    cell.backgroundView=background;
-//    [background mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(cell.circleView.mas_right).with.offset(H*0.01);
-//        make.top.equalTo(cell).with.offset(H*0.09);
-//        make.size.mas_equalTo(CGSizeMake(W*0.65, H*0.09+size.height));
-//    }];
     return cell;
 }
 

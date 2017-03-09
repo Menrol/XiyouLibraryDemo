@@ -1,6 +1,7 @@
 # XiyouLibraryDemo
-西邮图书馆App   
-初学iOS
+## 西邮图书馆App iOS版
+## 初学iOS
+## 部分界面截图
 ![image](https://github.com/Menrol/XiyouLibraryDemo/raw/master/images/QQ20170304-162956@2x.png)
 ![image](https://github.com/Menrol/XiyouLibraryDemo/raw/master/images/QQ20170304-163133@2x.png)
 ![image](https://github.com/Menrol/XiyouLibraryDemo/raw/master/images/25E177D4-766F-4D97-B25F-F7E2B64DE569.png)
